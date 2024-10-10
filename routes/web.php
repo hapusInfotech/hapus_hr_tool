@@ -35,5 +35,15 @@ Route::get('/', function () {
     }
 });
 
+Route::get('/success', function () {
+    return view('subscription.confirmation.success');
+});
+
+Route::get('/error', function () {
+    return view('subscription.confirmation.failed');
+
+});
+
+
 // Home route (protected, user must be authenticated)
 Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware('auth');

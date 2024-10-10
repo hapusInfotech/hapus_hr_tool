@@ -131,7 +131,7 @@ class RazorpayPaymentController extends Controller
 
             // Successful payment capture
             Session::flash('success', 'Payment successful!');
-            return redirect('/');
+            return redirect('/success');
 
         } catch (Exception $e) {
             // Handle payment failure
