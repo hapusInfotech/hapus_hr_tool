@@ -36,11 +36,27 @@ Route::get('/', function () {
 });
 
 Route::get('/success', function () {
-    return view('subscription.confirmation.success');
+
+    if (Auth::check()) {
+        // If user is logged in, redirect to /home
+        return view('subscription.confirmation.success');
+    } else {
+        // If not logged in, redirect to login page
+        return view('auth.login');
+    }
+
 });
 
 Route::get('/error', function () {
-    return view('subscription.confirmation.failed');
+
+    if (Auth::check()) {
+        // If user is logged in, redirect to /home
+        return view('subscription.confirmation.failed');;
+    } else {
+        // If not logged in, redirect to login page
+        return view('auth.login');
+    }
+   
 
 });
 
