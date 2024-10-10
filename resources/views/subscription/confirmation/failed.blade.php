@@ -183,7 +183,7 @@
 
         <div class="card">
 
-            <span class="card__failure"><img src="./img/delete.png" alt="Failure"></span>
+            <span class="card__failure"><img src="{{ asset('assets/img/delete.png') }}" alt="Failure"></span>
 
             <h1 class="card__msg">Payment Failed</h1>
             <h2 class="card__submsg">We're sorry, but your payment could not be processed. Please try again.</h2>
@@ -192,7 +192,7 @@
 
                 <div class="profile-section d-flex justify-content-center">
                     <div class="profile-img">
-                        <img src="{{ asset('img/user (1).png') }}" class="card__avatar">
+                        <img src="{{ asset('assets/img/profile.jpg') }}" class="card__avatar">
                     </div>
 
                     <div class="card__recipient-info">
