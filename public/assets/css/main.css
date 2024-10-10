@@ -1,3 +1,22 @@
+/* Import the Roboto font */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+/* Apply the font globally */
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+
+h1, h2, h3 {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700; /* Bold */
+}
+
+p {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+}
+
 .update-pro{
 	margin: 15px 25px;}
 
@@ -239,7 +258,7 @@
     padding: 10px 0;
 }
 
-.trial-plan .price-head h4, 
+.trial-plan .price-head h4,
 .trial-details h3 {
     color: #ff6f61;
 }
@@ -265,3 +284,129 @@
     border: none;
     padding: 10px 30px;
 }
+
+/* pricing */
+
+.pricing-wrapper{
+    z-index: 1;
+}
+
+
+.card-content h1 {
+    font-style: normal;
+    font-size: 50px;
+    color: rgb(0, 0, 0);
+    font-weight: 600;
+}
+
+.card-list li {
+    color: #000;
+}
+
+
+
+.pricing-wrapper .last-card {
+    transition: 0.8s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.second-section .first-card {
+    min-width: 240px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: rgba(24, 32, 79, 0.25) 0px 40px 80px, rgba(255, 255, 255, 0.5) 0px 0px 0px 0.5px inset;
+    backdrop-filter: blur(40px);
+    padding: 50px 20px;
+    max-width: 380px;
+    height: 519px;
+    border-radius: 60px 60px 60px 0px;
+}
+
+.second-section .last-card {
+    position: absolute;
+    width: 100%;
+    max-width: 380px;
+    height: 519px;
+    background: linear-gradient(rgb(47, 184, 255) 0%, rgb(158, 236, 217) 100%);
+    border-radius: 60px 60px 60px 0px;
+    transform: matrix(1, 0.14, 0, 0.99, 0, 0);
+    transform-origin: left bottom;
+    z-index: -1;
+}
+
+.second-section.second .last-card {
+    background: linear-gradient(rgb(153, 102, 255) 0%, rgb(255, 205, 86) 100%);
+
+}
+
+.second-section.third .last-card {
+
+
+    background: linear-gradient(rgb(255, 99, 132) 0%, rgb(255, 159, 64) 100%);
+}
+
+
+
+
+
+.second-section:hover .last-card {
+    transform: skewX(-10deg) skewY(20deg) scaleX(0.8) translateY(-3px);
+}
+
+.third-section .last-card {
+    position: absolute;
+    max-width: 360px;
+    width: 100%;
+    height: 426px;
+    background: linear-gradient(rgb(115, 184, 249) 11.94%, rgb(203, 216, 241) 80.98%);
+    border-radius: 60px 0px 60px 60px;
+    transform: matrix(0.99, 0.14, -0.15, 0.99, 0, 0);
+    transform-origin: right top;
+    z-index: -1;
+}
+
+.third-section .first-card {
+    max-width: 360px;
+    min-width: 240px;
+    width: 100%;
+    height: 426px;
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: rgba(24, 32, 79, 0.25) 0px 40px 80px, rgba(255, 255, 255, 0.5) 0px 0px 0px 0.5px inset;
+    backdrop-filter: blur(40px);
+    padding: 50px 20px;
+    border-radius: 60px 0px 60px 60px;
+}
+
+.third-section:hover .last-card {
+    transform: skewX(-10deg) skewY(20deg) scaleX(0.8) translateY(-3px);
+}
+
+.img-cont {
+    background: linear-gradient(200.44deg, rgb(67, 22, 219) 13.57%, rgb(144, 118, 231) 98.38%);
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 0px 0.5px inset;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+}
+
+.img-cont img {
+    width: 20px;
+    height: 20px;
+}
+
+.card-btn .btn {
+    width: 169px;
+    display: flex;
+    gap: 20px;
+}
+
+
+.pricing-plans {
+    /* background: linear-gradient(180deg, #1e3a8a 0%, #ffffff 100%); */
+    padding: 8% 0;
+}
+
