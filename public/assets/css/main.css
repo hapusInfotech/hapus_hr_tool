@@ -1,0 +1,267 @@
+.update-pro{
+	margin: 15px 25px;}
+
+.update-pro button {
+		padding: 13px 25px;
+	background: #4d7cfe;
+	color: #fff;
+	border-radius: 3px;
+	justify-content: center;
+	width: 100%;
+	border: 0;
+	cursor: pointer;
+}
+
+.update-pro button:hover {
+	background: #4d7cfe !important;
+	color: #fff;
+	transform: translateY(-2px);
+	transition: all .2s linear;
+}
+
+.update-pro:hover button:before{
+	display: none;
+}
+
+.update-pro button p, .update-pro button i{
+	color: #fff !important;
+	margin-bottom: 0px;
+}
+
+.update-pro button i{
+	margin-right: 5px !important;
+	font-size: 23px;
+	color: #C3C5CA;
+	margin-right: 15px;
+	width: 25px;
+	text-align: center;
+	vertical-align: middle;
+	float: left;
+}
+
+.demo .btn, .demo .progress{
+	margin-bottom: 15px !important;
+}
+
+.demo .form-check-label, .demo .form-radio-label{
+	margin-right: 15px;
+}
+
+.demo #slider{
+	margin-bottom: 15px;
+}
+
+.table-typo tbody > tr > td{
+	border-color: #fafafa;
+}
+
+.table-typo tbody > tr > td:first-child{
+	min-width: 200px;
+	vertical-align: bottom;
+}
+
+.table-typo tbody > tr > td:first-child p{
+	font-size: 14px;
+	color: #333;
+}
+
+.demo-icon {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin-bottom: 20px;
+	padding: 10px;
+	transition: all .2s;
+}
+
+.demo-icon:hover{
+	background-color: #f4f5f8;
+	border-radius: 3px;
+}
+
+.demo-icon .icon-preview{
+	font-size: 1.8rem;
+	margin-right: 10px;
+	line-height: 1;
+	color: #333439;
+}
+
+.demo-icon .icon-class{
+	font-weight: 300;
+	font-size: 13px;
+	color: #777;
+}
+
+.from-show-notify .form-control{
+	margin-bottom: 15px;
+}
+
+.from-show-notify label{
+	padding-top: 0.65rem;
+}
+
+@import url('https://fonts.googleapis.com/css?family=Ubuntu:500,700');
+
+.pricing-table-section {
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.pricing-table-section section {
+    padding: 100px 0;
+}
+
+.pricing-table-section .price-table {
+    text-align: center;
+    overflow: hidden;
+    margin: 20px;
+    background: #fff;
+    box-sizing: border-box;
+    box-shadow: inset 0 0 40px rgba(0,0,0,.2), 0 20px 50px rgba(0,0,0,.5);
+    border-radius: 20px;
+}
+
+.pricing-table-section .col-sm-4:nth-child(2) .price-table {
+    transform: scale(1.1);
+}
+
+.pricing-table-section .price-table .price-head {
+    padding: 50px;
+    background: linear-gradient(45deg,#3FFbdf,#5121f3);
+    border-bottom-left-radius: 50%;
+    border-bottom-right-radius: 50%;
+}
+
+.pricing-table-section .price-table .price-head h4 {
+    text-transform: uppercase;
+    margin: 0;
+    padding: 0;
+    color: #fff;
+    font-weight: 700;
+}
+
+.pricing-table-section .price-table .price-head h2 {
+    margin: 0;
+    padding: 20px 0 0;
+    font-size: 36px;
+    color: #fff;
+}
+
+.pricing-table-section .price-content {
+    position: relative;
+}
+
+.pricing-table-section .price-content ul {
+    position: relative;
+    margin: 0;
+    padding: 20px 0;
+}
+
+.pricing-table-section .price-content ul li {
+    list-style: none;
+    font-size: 16px;
+    text-transform: uppercase;
+    padding: 10px 0;
+    color: #777;
+    cursor: pointer;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    transition: .5s;
+}
+
+.pricing-table-section .price-content ul li:hover {
+    border-left: 15px solid #00dff2;
+    border-right: 15px solid #00dff2;
+}
+
+.pricing-table-section .price-button {
+    padding: 0 0 30px;
+}
+
+.pricing-table-section .price-button a {
+    padding: 10px 40px;
+    background: linear-gradient(45deg,#4ffbdf,#5121f3);
+    color: #fff;
+    border-radius: 25px;
+    font-size: 18px;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+.pricing-table-section .background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(45deg,#4ffbdf,#5121f3);
+}
+
+
+.wrapper.subscription{
+    min-height: 12vh;
+    height: auto;
+}
+
+.subscription-plans-section {
+    padding: 40px 0;
+}
+
+.price-table {
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.price-table:hover {
+    transform: scale(1.05);
+}
+
+.price-head h4 {
+    font-size: 1.5rem;
+    color: #007bff;
+}
+
+.price-head h2 {
+    font-size: 2.5rem;
+    color: #333;
+}
+
+.price-content ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.price-content ul li {
+    font-size: 1.1rem;
+    padding: 10px 0;
+}
+
+.trial-plan .price-head h4, 
+.trial-details h3 {
+    color: #ff6f61;
+}
+
+.basic-plan .price-head h4,
+.basic-details h3 {
+    color: #28a745;
+}
+
+.plan-details {
+    background-color: #f9f9f9;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border: none;
+    padding: 10px 30px;
+    font-size: 1.2rem;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    padding: 10px 30px;
+}
