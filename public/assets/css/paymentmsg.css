@@ -2,7 +2,7 @@ body {
     font-family: 'Roboto', sans-serif;
 }
 
-.bg {
+.bg-fail {
     background-color: #ff4c4c; /* Red background for failure */
     width: 480px;
     overflow: hidden;

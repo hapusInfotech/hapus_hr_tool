@@ -19,7 +19,7 @@
 
 <body>
 
-    <div class="bg">
+    <div class="bg-fail">
 
         <div class="card">
 
