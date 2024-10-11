@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RazorpayPaymentController;
+use App\Http\Controllers\SubscriptionAmountController;
 use App\Http\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -35,17 +36,14 @@ Route::get('/', function () {
     }
 });
 
-Route::get('/success', function () {
+Route::get('/success', [RazorpayPaymentController::class, 'showSuccessPage'])->name('success.page');
 
-    if (Auth::check()) {
-        // If user is logged in, redirect to /home
-        return view('subscription.confirmation.success');
-    } else {
-        // If not logged in, redirect to login page
-        return view('auth.login');
-    }
 
-});
+Route::resource('subscription_amounts', SubscriptionAmountController::class);
+
+
+
+Route::post('/finalize-subscription', [RazorpayPaymentController::class, 'finalizeSubscription'])->name('finalize.subscription');
 
 Route::get('/error', function () {
 

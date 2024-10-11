@@ -28,6 +28,23 @@
             <span class="card__success">
                 <img src="{{ asset('assets/img/check.png') }}" alt="Success">
             </span>
+            <form id="successForm" action="{{ route('finalize.subscription') }}" method="POST">
+                @csrf
+                <input type="hidden" name="uid" value="{{ $paymentData['uid'] }}">
+                {{-- {{ dd($paymentData) }} --}}
+                <input type="hidden" name="plan" value="{{ $paymentData['plan'] }}">
+                <input type="hidden" name="amount" value="{{ $paymentData['amount_id']/100 }}">
+                <input type="hidden" name="razorpay_payment_id" value="{{ $paymentData['payment_id'] }}">
+                <input type="hidden" name="transaction_id" value="{{ $paymentData['transaction_id'] }}">
+                <input type="hidden" name="company_id" value="{{ $paymentData['company_id'] }}">
+                {{-- <input type="hidden" name="plan_name" value="{{ $paymentData['plan_name'] }}"> --}}
+                <input type="hidden" name="paid_subscription_start" value="{{ $paymentData['paid_subscription_start'] }}">
+                <input type="hidden" name="paid_subscription_end" value="{{ $paymentData['paid_subscription_end'] }}">
+            
+                <script>
+                    document.getElementById('successForm').submit();
+                </script>
+            </form>
             
 
             <h1 class="card__msg">Payment Complete</h1>
