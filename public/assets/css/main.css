@@ -294,7 +294,7 @@ p {
 
 .card-content h1 {
     font-style: normal;
-    font-size: 50px;
+    font-size: 35px;
     color: rgb(0, 0, 0);
     font-weight: 600;
 }
@@ -410,3 +410,12 @@ p {
     padding: 8% 0;
 }
 
+.glowing-card {
+    box-shadow: 0 0 20px rgba(0, 123, 255, 0.7);
+    transition: box-shadow 0.3s ease-in-out;
+    border-radius: 10px;
+}
+
+.glowing-card:hover {
+    box-shadow: 0 0 30px rgba(0, 123, 255, 1), 0 0 60px rgba(0, 123, 255, 0.8);
+}
