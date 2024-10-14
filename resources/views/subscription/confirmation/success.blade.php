@@ -28,8 +28,7 @@
             <span class="card__success">
                 <img src="{{ asset('assets/img/check.png') }}" alt="Success">
             </span>
-        
-            {{ dd($payment_data) }}
+       
 
             <h1 class="card__msg">Payment Complete</h1>
             <h2 class="card__submsg">Thank you for your transfer. Your transaction has been successfully completed.</h2>
@@ -42,12 +41,12 @@
                     </div>
 
                     <div class="card__recipient-info">
-                        <p class="card__recipient">Nath Green</p>
-                        <p class="card__email">{{ $payment_data->email }}</p>
+                        {{-- <p class="card__recipient">Nath Green</p> --}}
+                        <p class="card__email">{{ $payment_data['email'] }}</p>
                     </div>
                 </div>
 
-                <h1 class="card__price"><span>£</span>{{ $payment_data->amount/100 }}<span>.00</span></h1>
+                <h1 class="card__price"><span>{{ $payment_data['symbol'] }}</span>{{ $payment_data['amount']/100 }}<span>.00</span></h1>
 
                 <p class="card__method">Payment method</p>
                 <div class="card__payment">

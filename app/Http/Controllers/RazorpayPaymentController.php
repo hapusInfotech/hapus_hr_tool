@@ -149,18 +149,24 @@ class RazorpayPaymentController extends Controller
                 // If capture failed, handle the error
                 return redirect()->back()->with('error', 'Payment capture failed.');
             }
+            $location = Location::get($request->ip());
+            $country = $location->countryCode ?? 'IN'; 
             $currencyDetails = $this->currencyService->getCurrencyByCountry($country);
-            dd($capture ,$request);
+        //   dd($capture);
             $this->finalizeSubscription($request);
             // Prepare the data for redirection
             $payment_data = [
                 'uid' => auth()->user()->id,
                 'payment_id' => $capture['id'],
+                'currency' => $currencyDetails['currency'],
+                'symbol' => $currencyDetails['symbol'],
                 
-                'email' => auth()->user()->email, // fixed to pass the email
+                'email' => $capture['email'], 
+                'contact' => $capture['contact'], 
                 'amount' => $request->input('amount'),
                 'plan' => $request->input('plan'),
                 'status' => 'Success',
+                
             ];
 
 // Redirect to the success page and pass the payment data
