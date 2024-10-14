@@ -39,13 +39,14 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/success', [RazorpayPaymentController::class, 'showSuccessPage'])->name('success.page');
+
 Route::get('/trail-landing', [CommonController::class, 'trailLanding'])->name('trail.landing');
 Route::get('/basic-landing', [CommonController::class, 'basicLanding'])->name('basic.landing');
 Route::get('/extend-basic-landing', [CommonController::class, 'extendsBasisLanding'])->name('extends_basic.landing');
 
 Route::resource('subscription_amounts', SubscriptionAmountController::class);
 
-Route::post('/finalize-subscription', [RazorpayPaymentController::class, 'finalizeSubscription'])->name('finalize.subscription');
+Route::get('/finalize-subscription', [RazorpayPaymentController::class, 'finalizeSubscription'])->name('finalize.subscription');
 
 Route::get('/error', function () {
 
@@ -62,9 +63,6 @@ Route::get('/error', function () {
 // Home route (protected, user must be authenticated)
 Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware('auth');
 
-
-
-
 //CRUD for company
 Route::get('/companies', [CompanyController::class, 'index'])->name('company.company_index');
 Route::get('/company/create', [CompanyController::class, 'create'])->name('company.company_create');
@@ -72,4 +70,3 @@ Route::post('/company', [CompanyController::class, 'store'])->name('company.stor
 Route::get('/company/{id}/edit', [CompanyController::class, 'edit'])->name('company.company_edit');
 Route::put('/company/{id}', [CompanyController::class, 'update'])->name('company.company_update');
 Route::delete('/company/{id}', [CompanyController::class, 'destroy'])->name('company.company_destroy');
-
