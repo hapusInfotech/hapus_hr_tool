@@ -155,6 +155,10 @@ class RazorpayPaymentController extends Controller
         //   dd($capture);
             $this->finalizeSubscription($request);
             // Prepare the data for redirection
+           
+            if (isset($capture['card'])) {
+               $crd = $capture['card'];
+            }
             $payment_data = [
                 'uid' => auth()->user()->id,
                 'payment_id' => $capture['id'],
@@ -166,6 +170,7 @@ class RazorpayPaymentController extends Controller
                 'amount' => $request->input('amount'),
                 'plan' => $request->input('plan'),
                 'status' => 'Success',
+                'card' => $crd ?? null,
                 
             ];
 
@@ -174,7 +179,7 @@ class RazorpayPaymentController extends Controller
         } catch (Exception $e) {
             // Handle payment failure
             Session::flash('error', 'Payment failed: ' . $e->getMessage());
-            return redirect('/error');
+            return redirect('/failed');
         }
 
         // Redirect to the success page with the data
@@ -188,13 +193,18 @@ class RazorpayPaymentController extends Controller
 
         // If no payment data exists, redirect to error
         if (!$payment_data) {
-            return redirect()->route('error.page')->with('error', 'No payment data found.');
+            return redirect()->route('failed.page')->with('error', 'No payment data found.');
         }
 
         // Pass the payment data to the success view
         return view('subscription.confirmation.success', compact('payment_data'));
     }
 
+    public function showErrorPage(Request $request)
+    {
+ 
+        return view('subscription.confirmation.failed');
+    }
     public function finalizeSubscription(Request $request)
     {
 

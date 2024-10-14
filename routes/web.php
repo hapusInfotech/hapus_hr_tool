@@ -38,7 +38,6 @@ Route::get('/', function () {
     }
 })->name('home');
 
-Route::get('/success', [RazorpayPaymentController::class, 'showSuccessPage'])->name('success.page');
 
 Route::get('/trail-landing', [CommonController::class, 'trailLanding'])->name('trail.landing');
 Route::get('/basic-landing', [CommonController::class, 'basicLanding'])->name('basic.landing');
@@ -48,17 +47,23 @@ Route::resource('subscription_amounts', SubscriptionAmountController::class);
 
 Route::get('/finalize-subscription', [RazorpayPaymentController::class, 'finalizeSubscription'])->name('finalize.subscription');
 
-Route::get('/error', function () {
 
-    if (Auth::check()) {
-        // If user is logged in, redirect to /home
-        return view('subscription.confirmation.failed');;
-    } else {
-        // If not logged in, redirect to login page
-        return view('auth.login');
-    }
 
-});
+Route::get('/success', [RazorpayPaymentController::class, 'showSuccessPage'])->name('success.page');
+Route::get('/failed', [RazorpayPaymentController::class, 'showErrorPage'])->name('failed.page');
+
+
+// Route::get('/error', function () {
+
+//     if (Auth::check()) {
+//         // If user is logged in, redirect to /home
+//         return view('subscription.confirmation.failed');;
+//     } else {
+//         // If not logged in, redirect to login page
+//         return view('auth.login');
+//     }
+
+// });
 
 // Home route (protected, user must be authenticated)
 Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware('auth');
