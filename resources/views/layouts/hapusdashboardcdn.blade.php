@@ -1,6 +1,7 @@
 <!-- resources/views/layouts/hapusdashboardcdn.blade.php -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,26 +16,29 @@
     <!-- Additional CDN or assets can go here -->
     @yield('cdn') <!-- This allows extending views to add their own CDN if needed -->
 </head>
+
 <body>
     <div class="container">
         @yield('content')
     </div>
 
     <!-- Scripts -->
-    <script src="{{ asset('assets/js/core/jquery.3.2.1.min.js') }}"></script>
-<script src="{{ asset('assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js') }}"></script>
-<script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
-<script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
-<script src="{{ asset('assets/js/plugin/chartist/chartist.min.js') }}"></script>
-<script src="{{ asset('assets/js/plugin/chartist/plugin/chartist-plugin-tooltip.min.js') }}"></script>
-<script src="{{ asset('assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js') }}"></script>
-<script src="{{ asset('assets/js/plugin/bootstrap-toggle/bootstrap-toggle.min.js') }}"></script>
-<script src="{{ asset('assets/js/plugin/jquery-mapael/jquery.mapael.min.js') }}"></script>
-<script src="{{ asset('assets/js/plugin/jquery-mapael/maps/world_countries.min.js') }}"></script>
-<script src="{{ asset('assets/js/plugin/chart-circle/circles.min.js') }}"></script>
-<script src="{{ asset('assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js') }}"></script>
-<script src="{{ asset('assets/js/ready.min.js') }}"></script>
-<script src="{{ asset('assets/js/demo.js') }}"></script>
+    <script src="{{ asset('assets/lib/core/jquery.3.2.1.min.js') }}"></script>
+    <script src="{{ asset('assets/lib/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js') }}"></script>
+    <script src="{{ asset('assets/lib/core/popper.min.js') }}"></script>
+    <script src="{{ asset('assets/lib/core/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('assets/lib/plugin/chartist/chartist.min.js') }}"></script>
+    <script src="{{ asset('assets/lib/plugin/chartist/plugin/chartist-plugin-tooltip.min.js') }}"></script>
+    <script src="{{ asset('assets/lib/plugin/bootstrap-notify/bootstrap-notify.min.js') }}"></script>
+    <script src="{{ asset('assets/lib/plugin/bootstrap-toggle/bootstrap-toggle.min.js') }}"></script>
+    <script src="{{ asset('assets/lib/plugin/jquery-mapael/jquery.mapael.min.js') }}"></script>
+    <script src="{{ asset('assets/lib/plugin/jquery-mapael/maps/world_countries.min.js') }}"></script>
+    <script src="{{ asset('assets/lib/plugin/chart-circle/circles.min.js') }}"></script>
+    <script src="{{ asset('assets/lib/plugin/jquery-scrollbar/jquery.scrollbar.min.js') }}"></script>
+    <script src="{{ asset('assets/js/ready.min.js') }}"></script>
+
+    {{-- <script src="{{ asset('assets/js/demo.js') }}"></script> --}}
     @yield('scripts') <!-- Allows extending views to add their own scripts -->
 </body>
+
 </html>
