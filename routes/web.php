@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CommonController;
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RazorpayPaymentController;
 use App\Http\Controllers\SubscriptionAmountController;
@@ -60,3 +61,15 @@ Route::get('/error', function () {
 
 // Home route (protected, user must be authenticated)
 Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware('auth');
+
+
+
+
+//CRUD for company
+Route::get('/companies', [CompanyController::class, 'index'])->name('company.company_index');
+Route::get('/company/create', [CompanyController::class, 'create'])->name('company.company_create');
+Route::post('/company', [CompanyController::class, 'store'])->name('company.store');
+Route::get('/company/{id}/edit', [CompanyController::class, 'edit'])->name('company.company_edit');
+Route::put('/company/{id}', [CompanyController::class, 'update'])->name('company.company_update');
+Route::delete('/company/{id}', [CompanyController::class, 'destroy'])->name('company.company_destroy');
+

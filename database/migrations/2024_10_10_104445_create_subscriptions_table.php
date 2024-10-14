@@ -15,7 +15,7 @@ class CreateSubscriptionsTable extends Migration
             $table->string('status', 50)->notNullable();
             $table->timestamps();
             $table->string('plan')->nullable();
-            $table->date('trial_start')->nullable(); 
+            $table->date('trial_start')->nullable();
             $table->date('trial_end')->nullable();
             $table->string('trial_signature')->nullable();
             $table->string('trial_razorpay_order_id')->nullable();
@@ -29,7 +29,7 @@ class CreateSubscriptionsTable extends Migration
             $table->string('transaction_id',255)->nullable();
             $table->tinyInteger('mail_flag')->default(0);
             $table->integer('company_id')->unsigned()->nullable();
-          
+
         });
     }
 
