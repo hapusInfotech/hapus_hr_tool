@@ -14,6 +14,7 @@ class SubscriptionDetail extends Model
         'uid',
         'name',
         'phone',
+        'email',
         'address',
         'country',
         'payment_status',

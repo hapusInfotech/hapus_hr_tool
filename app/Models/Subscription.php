@@ -14,7 +14,7 @@ class Subscription extends Model
     protected $fillable = [
         'uid', 'type', 'status', 'plan', 'trial_start', 'trial_end', 
         'trial_signature', 'trial_razorpay_order_id', 'paid_subscription_start', 
-        'paid_subscription_end', 'amount_id', 'payment_id', 'transaction_id', 
+        'paid_subscription_end', 'amount_id', 'amount','payment_id', 'transaction_id', 
         'trial_renewal', 'paid_renewal', 'mail_flag', 'company_id'
     ];
 

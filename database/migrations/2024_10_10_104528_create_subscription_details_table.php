@@ -14,6 +14,7 @@ class CreateSubscriptionDetailsTable extends Migration
             $table->integer('uid')->unsigned()->nullable();
             $table->string('name', 255)->nullable();
             $table->string('phone', 255)->nullable();
+            $table->string('email', 255)->nullable();
             $table->text('address')->nullable();
             $table->string('country', 255)->nullable();
             $table->string('payment_status', 255)->nullable();

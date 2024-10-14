@@ -22,6 +22,7 @@ class CreateSubscriptionsTable extends Migration
             $table->date('paid_subscription_start')->nullable(); // Date when paid subscription starts
             $table->date('paid_subscription_end')->nullable();
             $table->string('amount_id',255)->nullable();
+            $table->string('amount',255)->nullable();
             $table->tinyInteger('trial_renewal')->nullable();
             $table->tinyInteger('paid_renewal')->nullable();
             $table->string('payment_id',255)->nullable();

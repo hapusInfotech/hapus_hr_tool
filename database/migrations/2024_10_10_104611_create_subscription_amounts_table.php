@@ -1,6 +1,7 @@
 <?php
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateSubscriptionAmountsTable extends Migration
@@ -22,6 +23,38 @@ class CreateSubscriptionAmountsTable extends Migration
             $table->timestamps();
 
         });
+        DB::table('subscription_amounts')->insert([
+            [
+                'uid' => 1,
+                'status' => 'Active',
+                'subscription_type' => 'trial',
+                'amount' => 100,
+                'country' => 'India',
+                'amount_in_paisa' => 10000,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'uid' => 1,
+                'status' => 'Active',
+                'subscription_type' => 'basic',
+                'amount' => 250,
+                'country' => 'India',
+                'amount_in_paisa' => 25000,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'uid' => 1,
+                'status' => 'Active',
+                'subscription_type' => 'premium',
+                'amount' => 500,
+                'country' => 'India',
+                'amount_in_paisa' => 50000,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
     }
 
     public function down()

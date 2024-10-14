@@ -28,25 +28,8 @@
             <span class="card__success">
                 <img src="{{ asset('assets/img/check.png') }}" alt="Success">
             </span>
-            <form id="successForm" action="{{ route('finalize.subscription') }}" method="POST">
-                {{-- {{ dd($paymentData) }} --}}
-                @csrf
-                <input type="hidden" name="uid" value="{{ $paymentData['uid'] }}">
-                {{-- {{ dd($paymentData) }} --}}
-                <input type="hidden" name="plan" value="{{ $paymentData['plan'] }}">
-                <input type="hidden" name="amount" value="{{ $paymentData['amount_id']/100 }}">
-                <input type="hidden" name="razorpay_payment_id" value="{{ $paymentData['payment_id'] }}">
-                <input type="hidden" name="transaction_id" value="{{ $paymentData['transaction_id'] }}">
-                <input type="hidden" name="company_id" value="{{ $paymentData['company_id'] }}">
-                {{-- <input type="hidden" name="plan_name" value="{{ $paymentData['plan_name'] }}"> --}}
-                <input type="hidden" name="paid_subscription_start" value="{{ $paymentData['paid_subscription_start'] }}">
-                <input type="hidden" name="paid_subscription_end" value="{{ $paymentData['paid_subscription_end'] }}">
-            
-                <script>
-                    document.getElementById('successForm').submit();
-                </script>
-            </form>
-            
+        
+            {{ dd($payment_data) }}
 
             <h1 class="card__msg">Payment Complete</h1>
             <h2 class="card__submsg">Thank you for your transfer. Your transaction has been successfully completed.</h2>
@@ -60,11 +43,11 @@
 
                     <div class="card__recipient-info">
                         <p class="card__recipient">Nath Green</p>
-                        <p class="card__email">hello@nathgreen.co.uk</p>
+                        <p class="card__email">{{ $payment_data->email }}</p>
                     </div>
                 </div>
 
-                <h1 class="card__price"><span>£</span>20<span>.00</span></h1>
+                <h1 class="card__price"><span>£</span>{{ $payment_data->amount/100 }}<span>.00</span></h1>
 
                 <p class="card__method">Payment method</p>
                 <div class="card__payment">

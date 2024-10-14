@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Helpers\CommonHelper;
 use App\Models\Subscription;
+use App\Models\SubscriptionDetail;
 use App\Models\SubscriptionPayment;
 use App\Services\CurrencyService;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Razorpay\Api\Api; // Import Razorpay package
 use Stevebauman\Location\Facades\Location;
@@ -23,7 +25,9 @@ class RazorpayPaymentController extends Controller
 
     public function createOrder(Request $request)
     {
+
         try {
+
             // Capture form inputs
             $name = $request->input('name');
             $email = $request->input('email');
@@ -125,6 +129,7 @@ class RazorpayPaymentController extends Controller
 
     public function capturePayment(Request $request)
     {
+
         $razorpay_key = env('RAZORPAY_KEY');
         $razorpay_secret = env('RAZORPAY_SECRET');
 
@@ -140,48 +145,86 @@ class RazorpayPaymentController extends Controller
             $response = $api->payment->fetch($razorpay_payment_id);
             $capture = $response->capture(['amount' => $response['amount']]);
 
-            // Prepare the data to pass to the success page
-            $data = [
+            if ($capture['status'] !== 'captured') {
+                // If capture failed, handle the error
+                return redirect()->back()->with('error', 'Payment capture failed.');
+            }
+            $currencyDetails = $this->currencyService->getCurrencyByCountry($country);
+            dd($capture ,$request);
+            $this->finalizeSubscription($request);
+            // Prepare the data for redirection
+            $payment_data = [
                 'uid' => auth()->user()->id,
-                'type' => $request->input('plan') === 'trial' ? 1 : 2, // 1 for trial, 2 for paid
-                'status' => 'pending',
+                'payment_id' => $capture['id'],
+                
+                'email' => auth()->user()->email, // fixed to pass the email
+                'amount' => $request->input('amount'),
                 'plan' => $request->input('plan'),
-                'trial_start' => $request->input('plan') === 'trial' ? now() : null,
-                'trial_end' => $request->input('plan') === 'trial' ? now()->addMonth() : null,
-                'trial_signature' => $request->input('razorpay_signature'),
-                'trial_razorpay_order_id' => $request->input('razorpay_order_id'),
-                'paid_subscription_start' => $request->input('plan') !== 'trial' ? now() : null,
-                'paid_subscription_end' => $request->input('plan') !== 'trial' ? now()->addYear() : null,
-                'amount_id' => $response['amount'],
-                'trial_renewal' => 0,
-                'paid_renewal' => 0,
-                'payment_id' => $request->input('razorpay_payment_id'),
-                'transaction_id' => $request->input('transaction_id'),
-                'mail_flag' => 0,
-                'company_id' => $request->input('company_id'),
+                'status' => 'Success',
             ];
 
-            // Redirect to the success page with the data
-            return redirect()->route('success.page')->with('payment_data', $data);
+// Redirect to the success page and pass the payment data
+            return redirect()->route('success.page')->with('payment_data', $payment_data);
         } catch (Exception $e) {
             // Handle payment failure
             Session::flash('error', 'Payment failed: ' . $e->getMessage());
             return redirect('/error');
         }
+
+        // Redirect to the success page with the data
+
+    }
+    
+    public function showSuccessPage(Request $request)
+    {
+        // Retrieve the payment data passed during redirection
+        $payment_data = session('payment_data');
+
+        // If no payment data exists, redirect to error
+        if (!$payment_data) {
+            return redirect()->route('error.page')->with('error', 'No payment data found.');
+        }
+
+        // Pass the payment data to the success view
+        return view('subscription.confirmation.success', compact('payment_data'));
     }
 
     public function finalizeSubscription(Request $request)
     {
+
         if (!empty($request->input('plan')) && $request->input('plan') == "trial") {
             $type = CommonHelper::PLAN_TRIAL;
         } else {
             $type = CommonHelper::PLAN_BASIC;
 
         }
-        // dd($request);
+
+        $set_amt = [];
+
+        $check_amounts = $this->fetchAmount();
+        foreach ($check_amounts as $key => $check_amount) {
+            if ($request->input('plan') == $check_amount->subscription_type) {
+                $get_amt_id = $check_amount->id;
+                $get_amt = $check_amount->amount;
+
+                // Set both the ID and the amount correctly in the array
+                $set_amt['get_amt_id'] = $get_amt_id;
+                $set_amt['get_amt'] = $get_amt;
+
+                // Break out of the loop once a match is found
+                break;
+            }
+        }
+
+        // If no match is found, default values will remain null
+        if (empty($set_amt)) {
+            $set_amt['get_amt_id'] = null;
+            $set_amt['get_amt'] = null;
+        }
+
         if ($request->input('plan') == "trial") {
             $subscription = Subscription::create([
-                'uid' => $request->input('uid'),
+                'uid' => auth()->user()->id,
                 'type' => $type,
                 'status' => CommonHelper::STATUS_PENDING,
                 'plan' => $request->input('plan'),
@@ -190,9 +233,10 @@ class RazorpayPaymentController extends Controller
 
                 'paid_subscription_start' => null,
                 'paid_subscription_end' => null,
-                'amount_id' => $request->input('amount'),
-                'trial_signature' => $request->input('trial_signature'),
-                'trial_razorpay_order_id' => $request->input('trial_razorpay_order_id'),
+                'amount_id' => $set_amt['get_amt_id'],
+                'amount' => $set_amt['get_amt'],
+                'trial_signature' => $request->input('razorpay_signature'),
+                'trial_razorpay_order_id' => $request->input('razorpay_subscription_id'),
                 'payment_id' => $request->input('razorpay_payment_id'),
                 'transaction_id' => $request->input('transaction_id'),
                 'mail_flag' => 0,
@@ -200,44 +244,86 @@ class RazorpayPaymentController extends Controller
             ]);
         } else {
             $subscription = Subscription::create([
-                'uid' => $request->input('uid'),
+                'uid' => auth()->user()->id,
                 'type' => $type,
                 'status' => CommonHelper::STATUS_COMPLETED,
                 'plan' => $request->input('plan'),
-                'trial_start' => $request->input('trial_start'),
-                'trial_end' => $request->input('trial_end'),
-                'paid_subscription_start' =>now(),
+                'trial_start' => null,
+                'trial_end' => null,
+                'paid_subscription_start' => now(),
                 'paid_subscription_end' => now()->addMonth(),
-                'amount_id' => $request->input('amount'),
-                'trial_signature' => $request->input('trial_signature'),
-                'trial_razorpay_order_id' => $request->input('trial_razorpay_order_id'),
+                'amount_id' => $set_amt['get_amt_id'],
+                'amount' => $request->input('amount'),
+                'trial_signature' => null,
+                'trial_razorpay_order_id' => null,
                 'payment_id' => $request->input('razorpay_payment_id'),
-                'transaction_id' => $request->input('transaction_id'),
+                'transaction_id' => $request->input('subscription_id'),
                 'mail_flag' => 0,
                 'company_id' => $request->input('company_id'),
             ]);
         }
-        if (!empty($subscription)) {
+        if (!empty($subscription) && $request->input('plan') == "trial") {
 
             SubscriptionPayment::create([
                 'subscription_id' => $subscription->id,
-                'uid' => $request->input('uid'),
-                'payment_type' => 'Online Payment',
-                'transaction_id' => $request->input('razorpay_payment_id'),
-                'status' => 'Captured',
+                'uid' => auth()->user()->id,
+                'payment_type' => CommonHelper::PAYMENT_TYPE,
+                'transaction_id' => $request->input('subscription_id'),
+                'status' => CommonHelper::TRIAL_METHOD_VALUE,
                 'amount_id' => $request->input('amount'),
-                'payment_gateway' => 'Razorpay',
+                'payment_gateway' => CommonHelper::PAYMENT_RAZORPAY,
+            ]);
+            // subscription Details
+
+            SubscriptionDetail::create([
+                'subscription_id' => $subscription->id,
+                'uid' => auth()->user()->id,
+                'name' => $request->input('name'),
+                'email' => $request->input('email'),
+                'phone' => $request->input('phone'),
+                'address' => null,
+                'country' => $request->input('currency'),
+                'payment_status' => CommonHelper::TRIAL_METHOD_VALUE,
+                'flag' => 0,
+            ]);
+
+        } elseif (!empty($subscription) && $request->input('plan') == "basic") {
+            SubscriptionPayment::create([
+                'subscription_id' => $subscription->id,
+                'uid' => auth()->user()->id,
+                'payment_type' => CommonHelper::PAYMENT_TYPE,
+                'transaction_id' => $request->input('subscription_id'),
+                'status' => CommonHelper::BASIC_METHOD_VALUE,
+                'amount_id' => $request->input('amount'),
+                'payment_gateway' => CommonHelper::PAYMENT_RAZORPAY,
+            ]);
+            SubscriptionDetail::create([
+                'subscription_id' => $subscription->id,
+                'uid' => auth()->user()->id,
+                'name' => $request->input('name'),
+                'email' => $request->input('email'),
+                'phone' => $request->input('phone'),
+                'address' => null,
+                'country' => $request->input('currency'),
+                'payment_status' => CommonHelper::BASIC_METHOD_VALUE,
+                'flag' => 0,
             ]);
         }
-         return redirect()->route('success.page');
+        return true;
 
     }
 
+    public function fetchAmount()
+    {
+        // Fetch all rows from the subscription_amounts table
+        $amounts = DB::table('subscription_amounts')
+            ->select('id', 'uid', 'status', 'subscription_type', 'amount', 'country', 'amount_in_paisa')
+            ->get();
 
-    // public function fetchAmount(){
-    //     $amount = 
-    //     return $amount;
-    // }
+        return $amounts;
+
+    }
+
     public function handleWebhook(Request $request)
     {
         $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
@@ -261,19 +347,6 @@ class RazorpayPaymentController extends Controller
         }
 
         return response()->json(['status' => 'success']);
-    }
-    public function showSuccessPage(Request $request)
-    {
-        // Get the payment data from the session
-        $paymentData = session('payment_data');
-        // dd($paymentData);
-        // Check if paymentData exists and is not empty
-        if (!empty($paymentData)) {
-            return view('subscription.confirmation.success', compact('paymentData'));
-        }
-
-        // If payment data is missing, return an error
-        return redirect('/error')->with('error', 'Payment data not found.');
     }
 
     public function savePaymentDetails($subscriptionId, $userId, $razorpayPaymentId, $amount)
