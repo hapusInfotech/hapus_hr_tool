@@ -289,6 +289,8 @@ p {
 
 .pricing-wrapper{
     z-index: 1;
+    max-width: 380px;
+    width: 100%;
 }
 
 
@@ -312,12 +314,12 @@ p {
 .second-section .first-card {
     min-width: 240px;
     width: 100%;
-    background: rgba(255, 255, 255, 0.3);
+    background: linear-gradient(rgb(47, 184, 255) 0%, rgb(158, 236, 217) 100%);
     box-shadow: rgba(24, 32, 79, 0.25) 0px 40px 80px, rgba(255, 255, 255, 0.5) 0px 0px 0px 0.5px inset;
     backdrop-filter: blur(40px);
     padding: 50px 20px;
     max-width: 380px;
-    height: 519px;
+    height: 560px;
     border-radius: 60px 60px 60px 0px;
 }
 
@@ -325,7 +327,7 @@ p {
     position: absolute;
     width: 100%;
     max-width: 380px;
-    height: 519px;
+    height: 560px;
     background: linear-gradient(rgb(47, 184, 255) 0%, rgb(158, 236, 217) 100%);
     border-radius: 60px 60px 60px 0px;
     transform: matrix(1, 0.14, 0, 0.99, 0, 0);
@@ -333,7 +335,7 @@ p {
     z-index: -1;
 }
 
-.second-section.second .last-card {
+.second-section.second .last-card,.second-section.second .first-card {
     background: linear-gradient(rgb(153, 102, 255) 0%, rgb(255, 205, 86) 100%);
 
 }
@@ -419,3 +421,90 @@ p {
 .glowing-card:hover {
     box-shadow: 0 0 30px rgba(0, 123, 255, 1), 0 0 60px rgba(0, 123, 255, 0.8);
 }
+
+
+
+/* abou-tool section */
+
+.tool-dexc h1 {
+    font-size: 64px;
+}
+
+.tool-dexc ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.tool-dexc ul li {
+    position: relative;
+    padding-left: 30px;
+}
+
+.tool-dexc ul li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 30%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    background-image: url('../img/bluecheck.png');
+    background-size: cover;
+}
+
+
+.button-90 {
+    color: #fff;
+    padding: 15px 25px;
+    border-radius: 100px;
+    background-color: #4C43CD;
+    background-image: radial-gradient(93% 87% at 87% 89%, rgba(0, 0, 0, 0.23) 0%, transparent 86.18%),
+        radial-gradient(66% 87% at 26% 20%, rgba(255, 255, 255, 0.41) 0%, rgba(255, 255, 255, 0) 69.79%, rgba(255, 255, 255, 0) 100%);
+    box-shadow: 2px 19px 31px rgba(0, 0, 0, 0.2);
+    font-weight: bold;
+    font-size: 16px;
+    border: 0;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.fs-5{
+    font-size: 20px;
+}
+.tool-dexc,.pricing-details-row{
+    color: #000;
+}
+.tool-img{
+    background-image: url(../img/marketing-dashboard.png);
+    background-size: contain;
+    height: 100%;
+    background-repeat: no-repeat;
+}
+.about-tool-row,.pricing-details-row{
+    margin-block: 4%;
+    padding: 4%;
+}
+
+.pricing-details-row{
+    padding: 4%;
+    padding-bottom: 12%;
+
+}
+
+.sidebar {
+    width: 250px;
+    transition: width 0.3s ease;
+}
+
+.sidebar.collapse {
+    width: 0; /* Collapsed width */
+}
+
+.collapse:not(.show) {
+    width: 80px; /* Adjust this to the width you want when collapsed */
+}
+
+
+
