@@ -55,7 +55,7 @@
                 </div>
             </div>
         </div>
-        
+
 
         <div class="col-md-4">
             <div class="pricing-wrapper second-section second z-1 position-relative">
@@ -82,7 +82,7 @@
                 </div>
             </div>
         </div>
-        
+
 
         <div class="col-md-4">
             <div class="pricing-wrapper second-section third z-1 position-relative">
@@ -109,7 +109,7 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
 </div>
 
@@ -179,13 +179,13 @@
 
                 <!-- Plan Details Section -->
                 <div class="row mt-5">
-                    
+
                     <!-- Trial Plan Details -->
                     <div class="col-sm-4">
                         <div class="plan-details trial-details p-4 shadow-sm rounded">
                             <h3 class="text-center mb-4">Trial Subscription Plan</h3>
                             <p class="text-muted text-center">
-                                The <strong>Trial</strong> plan allows you to explore our HR tool for <strong>14 days</strong> at no cost. 
+                                The <strong>Trial</strong> plan allows you to explore our HR tool for <strong>14 days</strong> at no cost.
                                 This plan includes up to <strong>10 users</strong> and provides access to key features to get you started.
                             </p>
                             <ul>
@@ -203,13 +203,13 @@
                             </div>
                         </div>
                     </div>
-            
+
                     <!-- Basic Plan Details -->
                     <div class="col-sm-4">
                         <div class="plan-details basic-details p-4 shadow-sm rounded">
                             <h3 class="text-center mb-4">Basic Subscription Plan</h3>
                             <p class="text-muted text-center">
-                                The <strong>Basic</strong> plan is designed for small to medium-sized teams. For just <strong>$9.99/month</strong>, you can manage up to <strong>30 users</strong> 
+                                The <strong>Basic</strong> plan is designed for small to medium-sized teams. For just <strong>$9.99/month</strong>, you can manage up to <strong>30 users</strong>
                                 and access all the essential features needed to streamline HR operations.
                             </p>
                             <ul>
@@ -227,13 +227,13 @@
                             </div>
                         </div>
                     </div>
-            
+
                     <!-- Extended Basic Plan Details -->
                     <div class="col-sm-4">
                         <div class="plan-details extended-basic-details p-4 shadow-sm rounded">
                             <h3 class="text-center mb-4">Extended Basic Plan</h3>
                             <p class="text-muted text-center">
-                                The <strong>Extended Basic</strong> plan is ideal for large teams with more than <strong>30 users</strong>. For just <strong>$25.99/month</strong>, 
+                                The <strong>Extended Basic</strong> plan is ideal for large teams with more than <strong>30 users</strong>. For just <strong>$25.99/month</strong>,
                                 you'll have access to advanced features and tools to manage a growing workforce effectively.
                             </p>
                             <ul>
@@ -253,7 +253,7 @@
                     </div>
                 </div>
             </div>
-            
+
         </div>
 </div>
 

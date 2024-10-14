@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommonController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RazorpayPaymentController;
 use App\Http\Controllers\SubscriptionAmountController;
@@ -34,10 +35,12 @@ Route::get('/', function () {
         // If not logged in, redirect to login page
         return view('auth.login');
     }
-});
+})->name('home');
 
 Route::get('/success', [RazorpayPaymentController::class, 'showSuccessPage'])->name('success.page');
-
+Route::get('/trail-landing', [CommonController::class, 'trailLanding'])->name('trail.landing');
+Route::get('/basic-landing', [CommonController::class, 'basicLanding'])->name('basic.landing');
+Route::get('/extend-basic-landing', [CommonController::class, 'extendsBasisLanding'])->name('extends_basic.landing');
 
 Route::resource('subscription_amounts', SubscriptionAmountController::class);
 
@@ -54,7 +57,7 @@ Route::get('/error', function () {
         // If not logged in, redirect to login page
         return view('auth.login');
     }
-   
+
 
 });
 

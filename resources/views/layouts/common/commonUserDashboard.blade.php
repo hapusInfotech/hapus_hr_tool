@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="{{ asset('assets/lib/plugin/parsley/css/parsley.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/ready.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
+    @yield('head')
 </head>
 <body>
     <div class="wrapper">
@@ -155,8 +156,8 @@
 <!-- Scripts -->
 <script src="{{ asset('assets/lib/core/jquery.3.2.1.min.js') }}"></script>
 <script src="{{ asset('assets/lib/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js') }}"></script>
-<script src="{{ asset('assets/lib/core/popper.min.js') }}"></script>
 <script src="{{ asset('assets/lib/core/bootstrap.min.js') }}"></script>
+<script src="{{ asset('assets/lib/core/popper.min.js') }}"></script>
 <script src="{{ asset('assets/lib/plugin/bootstrap-notify/bootstrap-notify.min.js') }}"></script>
 <script src="{{ asset('assets/lib/plugin/bootstrap-toggle/bootstrap-toggle.min.js') }}"></script>
 <script src="{{ asset('assets/lib/plugin/jquery-scrollbar/jquery.scrollbar.min.js') }}"></script>
