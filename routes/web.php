@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // Fetch Razorpay key via AJAX
-Route::get('/get-razorpay-key', function() {
+Route::get('/get-razorpay-key', function () {
     return response()->json(['razorpay_key' => env('RAZORPAY_KEY')]);
 });
 
@@ -44,8 +44,6 @@ Route::get('/extend-basic-landing', [CommonController::class, 'extendsBasisLandi
 
 Route::resource('subscription_amounts', SubscriptionAmountController::class);
 
-
-
 Route::post('/finalize-subscription', [RazorpayPaymentController::class, 'finalizeSubscription'])->name('finalize.subscription');
 
 Route::get('/error', function () {
@@ -58,9 +56,7 @@ Route::get('/error', function () {
         return view('auth.login');
     }
 
-
 });
-
 
 // Home route (protected, user must be authenticated)
 Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware('auth');

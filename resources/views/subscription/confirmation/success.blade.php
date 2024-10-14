@@ -29,6 +29,7 @@
                 <img src="{{ asset('assets/img/check.png') }}" alt="Success">
             </span>
             <form id="successForm" action="{{ route('finalize.subscription') }}" method="POST">
+                {{-- {{ dd($paymentData) }} --}}
                 @csrf
                 <input type="hidden" name="uid" value="{{ $paymentData['uid'] }}">
                 {{-- {{ dd($paymentData) }} --}}

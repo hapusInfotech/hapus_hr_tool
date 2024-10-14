@@ -178,23 +178,45 @@ class RazorpayPaymentController extends Controller
             $type = CommonHelper::PLAN_BASIC;
 
         }
-        $subscription = Subscription::create([
-            'uid' => $request->input('uid'),
-            'type' => $type,
-            'status' => 'Completed', // Mark as active after finalizing
-            'plan' => $request->input('plan'),
-            'trial_start' => $request->input('trial_start'),
-            'trial_end' => $request->input('trial_end'),
-            'paid_subscription_start' => $request->input('paid_subscription_start'),
-            'paid_subscription_end' => $request->input('paid_subscription_end'),
-            'amount_id' => $request->input('amount'),
-            'trial_signature' => $request->input('trial_signature'),
-            'trial_razorpay_order_id' => $request->input('trial_razorpay_order_id'),
-            'payment_id' => $request->input('razorpay_payment_id'),
-            'transaction_id' => $request->input('transaction_id'),
-            'mail_flag' => 0,
-            'company_id' => $request->input('company_id'),
-        ]);
+        // dd($request);
+        if ($request->input('plan') == "trial") {
+            $subscription = Subscription::create([
+                'uid' => $request->input('uid'),
+                'type' => $type,
+                'status' => CommonHelper::STATUS_PENDING,
+                'plan' => $request->input('plan'),
+                'trial_start' => now(),
+                'trial_end' => now()->addMonth(),
+
+                'paid_subscription_start' => null,
+                'paid_subscription_end' => null,
+                'amount_id' => $request->input('amount'),
+                'trial_signature' => $request->input('trial_signature'),
+                'trial_razorpay_order_id' => $request->input('trial_razorpay_order_id'),
+                'payment_id' => $request->input('razorpay_payment_id'),
+                'transaction_id' => $request->input('transaction_id'),
+                'mail_flag' => 0,
+                'company_id' => $request->input('company_id'),
+            ]);
+        } else {
+            $subscription = Subscription::create([
+                'uid' => $request->input('uid'),
+                'type' => $type,
+                'status' => CommonHelper::STATUS_COMPLETED,
+                'plan' => $request->input('plan'),
+                'trial_start' => $request->input('trial_start'),
+                'trial_end' => $request->input('trial_end'),
+                'paid_subscription_start' =>now(),
+                'paid_subscription_end' => now()->addMonth(),
+                'amount_id' => $request->input('amount'),
+                'trial_signature' => $request->input('trial_signature'),
+                'trial_razorpay_order_id' => $request->input('trial_razorpay_order_id'),
+                'payment_id' => $request->input('razorpay_payment_id'),
+                'transaction_id' => $request->input('transaction_id'),
+                'mail_flag' => 0,
+                'company_id' => $request->input('company_id'),
+            ]);
+        }
         if (!empty($subscription)) {
 
             SubscriptionPayment::create([
@@ -207,10 +229,15 @@ class RazorpayPaymentController extends Controller
                 'payment_gateway' => 'Razorpay',
             ]);
         }
-        return redirect('/home')->with('success', 'Subscription finalized successfully!');
+         return redirect()->route('success.page');
 
     }
 
+
+    // public function fetchAmount(){
+    //     $amount = 
+    //     return $amount;
+    // }
     public function handleWebhook(Request $request)
     {
         $api = new Api(env('RAZORPAY_KEY'), env('RAZORPAY_SECRET'));
@@ -239,7 +266,7 @@ class RazorpayPaymentController extends Controller
     {
         // Get the payment data from the session
         $paymentData = session('payment_data');
-
+        // dd($paymentData);
         // Check if paymentData exists and is not empty
         if (!empty($paymentData)) {
             return view('subscription.confirmation.success', compact('paymentData'));
