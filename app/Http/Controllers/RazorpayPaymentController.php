@@ -150,12 +150,12 @@ class RazorpayPaymentController extends Controller
                 return redirect()->back()->with('error', 'Payment capture failed.');
             }
             $location = Location::get($request->ip());
-            $country = $location->countryCode ?? 'IN'; 
+            $country = $location->countryCode ?? 'IN';
             $currencyDetails = $this->currencyService->getCurrencyByCountry($country);
         //   dd($capture);
             $this->finalizeSubscription($request);
             // Prepare the data for redirection
-           
+
             if (isset($capture['card'])) {
                $crd = $capture['card'];
             }
@@ -164,14 +164,14 @@ class RazorpayPaymentController extends Controller
                 'payment_id' => $capture['id'],
                 'currency' => $currencyDetails['currency'],
                 'symbol' => $currencyDetails['symbol'],
-                
-                'email' => $capture['email'], 
-                'contact' => $capture['contact'], 
+
+                'email' => $capture['email'],
+                'contact' => $capture['contact'],
                 'amount' => $request->input('amount'),
                 'plan' => $request->input('plan'),
                 'status' => 'Success',
                 'card' => $crd ?? null,
-                
+
             ];
 
 // Redirect to the success page and pass the payment data
@@ -185,7 +185,7 @@ class RazorpayPaymentController extends Controller
         // Redirect to the success page with the data
 
     }
-    
+
     public function showSuccessPage(Request $request)
     {
         // Retrieve the payment data passed during redirection
@@ -193,18 +193,14 @@ class RazorpayPaymentController extends Controller
 
         // If no payment data exists, redirect to error
         if (!$payment_data) {
-            return redirect()->route('failed.page')->with('error', 'No payment data found.');
+            return redirect('/failed');
         }
 
         // Pass the payment data to the success view
         return view('subscription.confirmation.success', compact('payment_data'));
     }
 
-    public function showErrorPage(Request $request)
-    {
- 
-        return view('subscription.confirmation.failed');
-    }
+
     public function finalizeSubscription(Request $request)
     {
 

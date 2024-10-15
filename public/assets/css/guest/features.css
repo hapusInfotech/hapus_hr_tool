@@ -1,0 +1,28 @@
+.features-banner {
+    background: url('https://via.placeholder.com/1920x400') no-repeat center center;
+    background-size: cover;
+    color: #fff;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.features-banner h1 {
+    font-size: 3rem;
+    font-weight: bold;
+}
+.section-title {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+}
+.feature-box {
+    padding: 30px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+.feature-box:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-5px);
+}

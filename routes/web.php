@@ -2,12 +2,36 @@
 
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\DemoController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\QuestPageController;
 use App\Http\Controllers\RazorpayPaymentController;
 use App\Http\Controllers\SubscriptionAmountController;
 use App\Http\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/', function () {
+    // Check if the user is authenticated
+    if (Auth::check()) {
+        // If the user is logged in, redirect to /home
+        return redirect('/home');
+    } else {
+        // If the user is not logged in, call the QuestPageController home method
+        return app(QuestPageController::class)->home();
+    }
+})->name('guest_home');
+// Route::get('/', [QuestPageController::class, 'home'])->name('guest_home');
+Route::get('/features', [QuestPageController::class, 'features'])->name('features');
+Route::get('/pricing', [QuestPageController::class, 'pricing'])->name('pricing');
+Route::get('/contact', [QuestPageController::class, 'contact'])->name('contact');
+Route::post('/contact-submit', [ContactController::class, 'submit'])->name('contact.submit');
+// Free demo page route
+Route::get('/demo', [DemoController::class, 'show'])->name('demo.show');
+
+// Form submission route for demo requests
+Route::post('/demo-submit', [DemoController::class, 'submit'])->name('demo.submit');
 
 // Fetch Razorpay key via AJAX
 Route::get('/get-razorpay-key', function () {
@@ -28,16 +52,6 @@ Route::get('/subscription-trial', [SubscriptionController::class, 'showTrial'])-
 Route::get('/subscription-basic', [SubscriptionController::class, 'showBasic'])->name('subscription.basic')->middleware('auth');
 
 // Redirect user based on authentication status
-Route::get('/', function () {
-    if (Auth::check()) {
-        // If user is logged in, redirect to /home
-        return redirect('/home');
-    } else {
-        // If not logged in, redirect to login page
-        return view('auth.login');
-    }
-})->name('home');
-
 
 Route::get('/trail-landing', [CommonController::class, 'trailLanding'])->name('trail.landing');
 Route::get('/basic-landing', [CommonController::class, 'basicLanding'])->name('basic.landing');
@@ -47,23 +61,19 @@ Route::resource('subscription_amounts', SubscriptionAmountController::class);
 
 Route::get('/finalize-subscription', [RazorpayPaymentController::class, 'finalizeSubscription'])->name('finalize.subscription');
 
-
-
 Route::get('/success', [RazorpayPaymentController::class, 'showSuccessPage'])->name('success.page');
-Route::get('/failed', [RazorpayPaymentController::class, 'showErrorPage'])->name('failed.page');
 
+Route::get('/failed', function () {
 
-// Route::get('/error', function () {
+    if (Auth::check()) {
+        // If user is logged in, redirect to /home
+        return view('subscription.confirmation.failed');;
+    } else {
+        // If not logged in, redirect to login page
+        return view('auth.login');
+    }
 
-//     if (Auth::check()) {
-//         // If user is logged in, redirect to /home
-//         return view('subscription.confirmation.failed');;
-//     } else {
-//         // If not logged in, redirect to login page
-//         return view('auth.login');
-//     }
-
-// });
+});
 
 // Home route (protected, user must be authenticated)
 Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware('auth');

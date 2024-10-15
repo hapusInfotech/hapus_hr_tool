@@ -1,0 +1,55 @@
+.pricing-banner {
+    background: url("https://via.placeholder.com/1920x400") no-repeat center
+        center;
+    background-size: cover;
+    color: #fff;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.pricing-banner h1 {
+    font-size: 3rem;
+    font-weight: bold;
+}
+.pricing-card {
+    padding: 30px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+.pricing-card:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-5px);
+}
+.pricing-card .price {
+    font-size: 2rem;
+    font-weight: bold;
+}
+.feature-list {
+    list-style-type: none;
+    padding: 0;
+}
+.feature-list li {
+    padding: 10px 0;
+}
+.feature-list li .fa-check {
+    color: green;
+}
+.feature-list li .fa-times {
+    color: red;
+}
+.faq-section h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+.faq-item {
+    margin-bottom: 20px;
+}
+.comparison-table thead th {
+    background-color: #f8f9fa;
+}
+.support-section {
+    background-color: #f8f9fa;
+    padding: 50px 0;
+}

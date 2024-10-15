@@ -1,0 +1,39 @@
+/* Custom CSS for styling */
+.banner {
+    background: url("https://via.placeholder.com/1920x600") no-repeat center
+        center;
+    background-size: cover;
+    color: #fff;
+    height: 600px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.banner h1 {
+    font-size: 4rem;
+    font-weight: bold;
+}
+.section-title {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+}
+.about-us {
+    background-color: #f8f9fa;
+    padding: 50px 0;
+}
+.features {
+    padding: 50px 0;
+}
+.feature-box {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-align: center;
+}
+.testimonials {
+    background-color: #f8f9fa;
+    padding: 50px 0;
+}
+.contact {
+    padding: 50px 0;
+}
