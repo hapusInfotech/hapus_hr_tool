@@ -8,5 +8,8 @@
 </head>
 <body>
     <h1>Admin</h1>
+    @extends('layouts.common.commonUserDashboard')
+    @section('content')
+    @endsection
 </body>
 </html>

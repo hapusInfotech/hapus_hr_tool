@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Middleware;
 
 use Closure;
@@ -29,12 +30,7 @@ class RoleMiddleware
             return redirect('/home'); // Redirect to home if they don't have the required role
         }
 
-        // If the user is a Super Admin, redirect them to /admin/home
-        if ($user->hasRole('super admin')) {
-            return redirect('/admin/home');
-        }
-
-        // Continue with the next request
+        // If the user has the required role, proceed with the request
         return $next($request);
     }
 }

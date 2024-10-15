@@ -3,7 +3,6 @@
 use App\Models\Role;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Spatie\Permission\Models\Permission;
 
@@ -118,27 +117,6 @@ return new class extends Migration
             $table->primary([$pivotPermission, $pivotRole], 'role_has_permissions_permission_id_role_id_primary');
         });
 
-        // Insert default roles after the roles table is created
-        $superAdminRole = Role::create(['name' => 'Super Admin', 'guard_name' => 'web']);
-        $supportAdminRole = Role::create(['name' => 'Support Admin', 'guard_name' => 'web']);
-        $companyAdminRole = Role::create(['name' => 'Company Admin', 'guard_name' => 'web']);
-        $permissions = Permission::all();
-
-// Assign all permissions to the Admin role
-        $superAdminRole->syncPermissions($permissions);
-
-// Create some permissions
-        Permission::create(['name' => 'super admin']);
-        Permission::create(['name' => 'support admin']);
-        Permission::create(['name' => 'company admin']);
-
-        $superAdminRole->givePermissionTo('super admin');
-
-// Assign specific permissions to roles
-        $supportAdminRole->givePermissionTo('support admin');
-        $companyAdminRole->givePermissionTo('company admin');
-
-        //
 
 
         app('cache')
