@@ -30,7 +30,7 @@ class RoleMiddleware
         }
 
         // If the user is a Super Admin, redirect them to /admin/home
-        if ($user->hasRole('Super Admin')) {
+        if ($user->hasRole('super admin')) {
             return redirect('/admin/home');
         }
 
