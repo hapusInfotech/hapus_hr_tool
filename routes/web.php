@@ -100,4 +100,14 @@ Route::put('/company/{id}', [CompanyController::class, 'update'])->name('company
 Route::delete('/company/{id}', [CompanyController::class, 'destroy'])->name('company.company_destroy');
 
 //super admin Routes
-Route::get('/admin/home', [AdminController::class, 'index'])->middleware('role:super admin')->name('admin.home');
+Route::get('/admin/home', [AdminController::class, 'super_admin_index'])
+    ->middleware('role:super admin')
+    ->name('admin.home');
+
+Route::get('/support/home', [AdminController::class, 'support_admin_index'])
+    ->middleware('role:support admin')
+    ->name('support.home');
+
+Route::get('/company/home', [AdminController::class, 'company_admin_index'])
+    ->middleware('role:company admin')
+    ->name('company.home');

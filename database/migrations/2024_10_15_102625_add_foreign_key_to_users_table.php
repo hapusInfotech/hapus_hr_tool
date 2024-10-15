@@ -4,6 +4,7 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -28,14 +29,14 @@ return new class extends Migration
         $superAdminRole = Role::create(['name' => 'super admin', 'guard_name' => 'web']);
         $supportAdminRole = Role::create(['name' => 'support admin', 'guard_name' => 'web']);
         $companyAdminRole = Role::create(['name' => 'company admin', 'guard_name' => 'web']);
-
+        Role::create(['name' => 'authenticated user', 'guard_name' => 'web']);
         // Insert users and assign role_name and role_id dynamically
         $superAdmin = User::create([
             'name' => 'lakshanaapriya',
             'email' => 'lakshanaapriyavijay@gmail.com',
             'role_name' => $superAdminRole->name, // Add role_name
             'role_id' => $superAdminRole->id, // Add role_id from the created role
-            'password' => bcrypt('lakshanaapriya'),
+            'password' => Hash::make('lakshanaapriya'),
             'email_verified_at' => now(),
         ]);
 
@@ -44,7 +45,7 @@ return new class extends Migration
             'email' => 'harishkumar2002@gmail.com',
             'role_name' => $supportAdminRole->name, // Add role_name
             'role_id' => $supportAdminRole->id, // Add role_id from the created role
-            'password' => bcrypt('harishkumar'),
+            'password' => Hash::make('harishkumar'),
             'email_verified_at' => now(),
         ]);
 
@@ -52,9 +53,9 @@ return new class extends Migration
             'name' => 'James Doe',
             'email' => 'companyadmin@example.com',
             'role_name' => $companyAdminRole->name, // Add role_name
-            'role_id' => $companyAdminRole->id, 
-            
-            'password' => bcrypt('password'),
+            'role_id' => $companyAdminRole->id,
+
+            'password' => Hash::make('password'),
             'email_verified_at' => now(),
         ]);
 
@@ -83,5 +84,6 @@ return new class extends Migration
         Role::where('name', 'super admin')->delete();
         Role::where('name', 'support admin')->delete();
         Role::where('name', 'company admin')->delete();
+        Role::where('name', 'authenticated user')->delete();
     }
 };
