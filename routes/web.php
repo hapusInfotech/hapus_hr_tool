@@ -13,6 +13,10 @@ use App\Http\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+// Authentication routes (login, register, etc.)
+Auth::routes();
+
+//guest route
 Route::get('/', function () {
     // Check if the user is authenticated
     if (Auth::check()) {
@@ -23,6 +27,9 @@ Route::get('/', function () {
         return app(QuestPageController::class)->home();
     }
 })->name('guest_home');
+
+// guest pages routes
+
 // Route::get('/', [QuestPageController::class, 'home'])->name('guest_home');
 Route::get('/features', [QuestPageController::class, 'features'])->name('features');
 Route::get('/pricing', [QuestPageController::class, 'pricing'])->name('pricing');
@@ -33,7 +40,9 @@ Route::get('/demo', [DemoController::class, 'show'])->name('demo.show');
 
 // Form submission route for demo requests
 Route::post('/demo-submit', [DemoController::class, 'submit'])->name('demo.submit');
+//
 
+//payment Route
 // Fetch Razorpay key via AJAX
 Route::get('/get-razorpay-key', function () {
     return response()->json(['razorpay_key' => env('RAZORPAY_KEY')]);
@@ -42,23 +51,14 @@ Route::get('/get-razorpay-key', function () {
 // Razorpay order and payment routes
 Route::post('/razorpay-payment', [RazorpayPaymentController::class, 'createOrder'])->name('razorpay.payment');
 Route::post('/capture-payment', [RazorpayPaymentController::class, 'capturePayment'])->name('razorpay.capture');
-
-// Authentication routes (login, register, etc.)
-Auth::routes();
-
+//
+//subscription route
 // Route for the trial subscription (protected, user must be authenticated)
 Route::get('/subscription-trial', [SubscriptionController::class, 'showTrial'])->name('subscription.trial')->middleware('auth');
 
 // Route for the basic subscription (protected, user must be authenticated)
 Route::get('/subscription-basic', [SubscriptionController::class, 'showBasic'])->name('subscription.basic')->middleware('auth');
 
-// Redirect user based on authentication status
-
-Route::get('/trail-landing', [CommonController::class, 'trailLanding'])->name('trail.landing');
-Route::get('/basic-landing', [CommonController::class, 'basicLanding'])->name('basic.landing');
-Route::get('/extend-basic-landing', [CommonController::class, 'extendsBasisLanding'])->name('extends_basic.landing');
-
-Route::resource('subscription_amounts', SubscriptionAmountController::class);
 
 Route::get('/finalize-subscription', [RazorpayPaymentController::class, 'finalizeSubscription'])->name('finalize.subscription');
 
@@ -76,6 +76,18 @@ Route::get('/failed', function () {
 
 });
 
+// Redirect user based on authentication status
+//subscription route landing pages
+Route::get('/trail-landing', [CommonController::class, 'trailLanding'])->name('trail.landing');
+Route::get('/basic-landing', [CommonController::class, 'basicLanding'])->name('basic.landing');
+Route::get('/extend-basic-landing', [CommonController::class, 'extendsBasisLanding'])->name('extends_basic.landing');
+
+
+// admin amount alter rout FUll CRUD
+Route::resource('subscription_amounts', SubscriptionAmountController::class);
+
+
+
 // Home route (protected, user must be authenticated)
 Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware('auth');
 
@@ -86,7 +98,6 @@ Route::post('/company', [CompanyController::class, 'store'])->name('company.stor
 Route::get('/company/{id}/edit', [CompanyController::class, 'edit'])->name('company.company_edit');
 Route::put('/company/{id}', [CompanyController::class, 'update'])->name('company.company_update');
 Route::delete('/company/{id}', [CompanyController::class, 'destroy'])->name('company.company_destroy');
-
 
 //super admin Routes
 Route::get('/admin/home', [AdminController::class, 'index'])->middleware('role:Super Admin')->name('admin.home');
