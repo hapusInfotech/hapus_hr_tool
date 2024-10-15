@@ -21,8 +21,8 @@ class DemoController extends Controller
             'email' => $request->email,
             'phone_number' => $request->phone_number,
             'company' => $request->company,
-            'country' => $request->country,
-            'state' => $request->state,
+            'country' => $request->country, // Store country name
+            'state' => $request->state, // Store state name
             'message' => $request->message,
         ]);
 

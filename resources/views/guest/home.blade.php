@@ -13,6 +13,7 @@
         <div class="container">
             <h1>Welcome to Hapus HR Tool</h1>
             <p class="lead">Streamline your HR processes with ease.</p>
+            <a href="{{ route('demo.show') }}" class="btn btn-danger btn-lg" style="margin-right: 20px">Request a Demo</a>
             <a href="{{ route('register') }}" class="btn btn-primary btn-lg">Get Started</a>
         </div>
     </section>
