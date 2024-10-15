@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContactController;
@@ -85,3 +86,7 @@ Route::post('/company', [CompanyController::class, 'store'])->name('company.stor
 Route::get('/company/{id}/edit', [CompanyController::class, 'edit'])->name('company.company_edit');
 Route::put('/company/{id}', [CompanyController::class, 'update'])->name('company.company_update');
 Route::delete('/company/{id}', [CompanyController::class, 'destroy'])->name('company.company_destroy');
+
+
+//super admin Routes
+Route::get('/admin/home', [AdminController::class, 'index'])->middleware('role:Super Admin')->name('admin.home');
