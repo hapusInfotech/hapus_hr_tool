@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Auth\CompanyLoginController;
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContactController;
@@ -95,7 +96,7 @@ Route::get('/company/{id}/edit', [CompanyController::class, 'edit'])->name('comp
 Route::put('/company/{id}', [CompanyController::class, 'update'])->name('company.company_update');
 Route::delete('/company/{id}', [CompanyController::class, 'destroy'])->name('company.company_destroy');
 Route::post('/check-company-prefix', [CompanyController::class, 'checkCompanyPrefix'])->name('company.checkPrefix');
-
+Route::get('company/thankyou', [CompanyController::class, 'thankyou'])->name('company.thankyou');
 
 //super admin Routes
 Route::get('/admin/home', [AdminController::class, 'super_admin_index'])
@@ -113,3 +114,12 @@ Route::get('/company/admin/home', [AdminController::class, 'company_super_admin_
 Route::get('/company/home', [AdminController::class, 'company_admin_index'])
     ->middleware('role:company admin')
     ->name('company.home');
+
+Route::get('company/login', [CompanyLoginController::class, 'showLoginForm'])->name('company.login');
+Route::post('company/login', [CompanyLoginController::class, 'login'])->name('company.login.submit');
+Route::post('company/logout', [CompanyLoginController::class, 'logout'])->name('company.logout');
+Route::get('company/password/reset', [CompanyLoginController::class, 'showPasswordResetForm'])->name('company.password.reset');
+Route::post('company/password/reset', [CompanyLoginController::class, 'resetPassword'])->name('company.password.update');
+Route::get('company/dashboard', [CompanyLoginController::class, 'dashboard'])
+    ->middleware('auth:company_login')
+    ->name('company.dashboard');

@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
+use App\Models\CompanyUser;
 use App\Services\CompanyDynamicTableService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 // Assuming you have a Company model
 
@@ -36,6 +36,7 @@ class CompanyController extends Controller
             $sid = $n_sid;
         } else {
             $sid = null;
+            return redirect()->route('login');
         }
 // dd(auth()->user()->id);
         return view('company.company_create', compact('sid'));
@@ -47,7 +48,7 @@ class CompanyController extends Controller
         // Store the company data in the database
         $sid = $request->input('sid');
 
-        Company::create([
+        $company = Company::create([
             'company_name' => $request->input('company_name'),
             'company_prefix' => $request->input('company_prefix'),
             'company_type' => $request->input('company_type'),
@@ -61,23 +62,28 @@ class CompanyController extends Controller
             'company_status' => 1, // Active by default
         ]);
 
-        // // Dynamically create a table based on the company's prefix or name
-        // $tableName = $request->company_prefix . '_employees'; // Example table name
-        // if (!Schema::hasTable($tableName)) {
-        //     Schema::create($tableName, function (Blueprint $table) {
-        //         $table->id();
-        //         $table->string('name'); // You can customize the columns as needed
-        //         $table->string('description')->nullable();
-        //         $table->timestamps();
-        //     });
-        // }
+        $this->companyDynamicTableService->createDepartmentTable($request->company_prefix, $company->id);
+        $this->companyDynamicTableService->createRolesTable($request->company_prefix, $company->id);
+        $this->companyDynamicTableService->createMediaTable($request->company_prefix, $company->id);
+        $this->companyDynamicTableService->createFileTable($request->company_prefix, $company->id);
 
-        // // Optionally, generate a model for the newly created table
-        // Artisan::call('make:model', ['name' => ucfirst($request->company_prefix)]);
+        // Generate a strong random password
+        $generatedPassword = Str::random(12); // You can make this more complex if required
 
-        $this->companyDynamicTableService->createEmployeeTable($request);
-        // Redirect to the form with a success message
-        return redirect()->route('company.company_create')->with('success', 'Company created and table and model generated successfully!');
+        // Add a user to the company_users table with the generated password
+        $companyUser = CompanyUser::create([
+            'name' => $request->input('company_name'), // Name for the company user (you can adjust this)
+            'email' => $request->input('company_email'),
+            'password' => Hash::make($generatedPassword),
+            'company_id' => $company->id,
+            'force_password_change' => true, // This flag will force the user to change password on first login
+        ]);
+
+        // Redirect to the thank you page with the relevant data
+        return redirect()->route('company.thankyou', [
+            'email' => $companyUser->email,
+            'password' => $generatedPassword,
+        ]);
 
     }
 
@@ -173,6 +179,16 @@ class CompanyController extends Controller
         $exists = Company::where('company_prefix', $request->company_prefix)->exists();
 
         return response()->json(['exists' => $exists]);
+    }
+
+    public function thankyou(Request $request)
+    {
+        // Retrieve the email and password from the URL query parameters
+        $email = $request->input('email');
+        $password = $request->input('password');
+
+        // Return the view with the email, password, and login URL
+        return view('company.company_thankyou', compact('email', 'password'));
     }
 
 }
