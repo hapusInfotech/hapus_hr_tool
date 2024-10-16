@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
+use App\Services\CompanyDynamicTableService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 
@@ -10,6 +11,11 @@ use Illuminate\Support\Facades\Crypt;
 
 class CompanyController extends Controller
 {
+    protected $companyDynamicTableService;
+    public function __construct(CompanyDynamicTableService $companyDynamicTableService)
+    {
+        $this->companyDynamicTableService = $companyDynamicTableService;
+    }
     public function index()
     {
         // Fetch all companies with pagination or without, depending on your needs
@@ -50,9 +56,10 @@ class CompanyController extends Controller
             'email_status' => 0, // Default to 0
             'company_status' => 1, // Active by default
         ]);
-
+        $this->companyDynamicTableService->createEmployeeTable($request);
         // Redirect to the form with a success message
-        return redirect()->route('company.company_create')->with('success', 'Company created successfully!');
+        return redirect()->route('company.company_create')->with('success', 'Company created and table and model generated successfully!');
+
     }
 
     public function edit($encryptedId)
