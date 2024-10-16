@@ -28,7 +28,8 @@ return new class extends Migration
         // Create roles first
         $superAdminRole = Role::create(['name' => 'super admin', 'guard_name' => 'web']);
         $supportAdminRole = Role::create(['name' => 'support admin', 'guard_name' => 'web']);
-        $companyAdminRole = Role::create(['name' => 'company admin', 'guard_name' => 'web']);
+        $companySuperAdminRole = Role::create(['name' => 'company super admin', 'guard_name' => 'web']);
+        Role::create(['name' => 'company admin', 'guard_name' => 'web']);
         Role::create(['name' => 'authenticated user', 'guard_name' => 'web']);
         // Insert users and assign role_name and role_id dynamically
         $superAdmin = User::create([
@@ -50,10 +51,10 @@ return new class extends Migration
         ]);
 
         $companyAdmin = User::create([
-            'name' => 'James Doe',
-            'email' => 'companyadmin@example.com',
-            'role_name' => $companyAdminRole->name, // Add role_name
-            'role_id' => $companyAdminRole->id,
+            'name' => 'harish',
+            'email' => 'harish@mail.com',
+            'role_name' => $companySuperAdminRole->name, // Add role_name
+            'role_id' => $companySuperAdminRole->id,
 
             'password' => Hash::make('password'),
             'email_verified_at' => now(),
@@ -62,7 +63,7 @@ return new class extends Migration
         // Assign roles to the users
         $superAdmin->assignRole($superAdminRole); // Assign 'super admin' role to superAdmin user
         $supportAdmin->assignRole($supportAdminRole); // Assign 'support admin' role to supportAdmin user
-        $companyAdmin->assignRole($companyAdminRole); // Assign 'company admin' role to companyAdmin user
+        $companyAdmin->assignRole($companySuperAdminRole); // Assign 'company admin' role to companyAdmin user
     }
 
     /**
@@ -83,6 +84,7 @@ return new class extends Migration
 
         Role::where('name', 'super admin')->delete();
         Role::where('name', 'support admin')->delete();
+        Role::where('name', 'company super admin')->delete();
         Role::where('name', 'company admin')->delete();
         Role::where('name', 'authenticated user')->delete();
     }

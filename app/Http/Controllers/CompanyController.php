@@ -20,23 +20,32 @@ class CompanyController extends Controller
     }
 
     // Display the form
-    public function create()
+    public function create(Request $request)
     {
-        return view('company.company_create');
+        $n_sid = $request->input('sid');
+        if (!empty($n_sid)) {
+            $sid = $n_sid;
+        } else {
+            $sid = null;
+        }
+// dd(auth()->user()->id);
+        return view('company.company_create', compact('sid'));
     }
 
     // Store the form data
     public function store(Request $request)
     {
         // Store the company data in the database
+        $sid = $request->input('sid');
+
         Company::create([
             'company_name' => $request->input('company_name'),
             'company_type' => $request->input('company_type'),
             'company_email' => $request->input('company_email'),
             'company_phone_number' => $request->input('company_phone_number'),
-            'company_address' => $this->formatAddress($request), // Store the full address as a single field in the specified format
+            'company_address' => $this->formatAddress($request),
             'uid' => auth()->id(), // Assuming you're storing the currently authenticated user's ID
-            'subscription_id' => 5, // Set this value as needed
+            'subscription_id' => $sid, // Set this value as needed
             'roles_id' => 1, // Default role_id if needed
             'email_status' => 0, // Default to 0
             'company_status' => 1, // Active by default

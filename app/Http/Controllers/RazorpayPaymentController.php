@@ -152,12 +152,12 @@ class RazorpayPaymentController extends Controller
             $location = Location::get($request->ip());
             $country = $location->countryCode ?? 'IN';
             $currencyDetails = $this->currencyService->getCurrencyByCountry($country);
-        //   dd($capture);
-            $this->finalizeSubscription($request);
+            //   dd($capture);
+            $sid = $this->finalizeSubscription($request);
             // Prepare the data for redirection
 
             if (isset($capture['card'])) {
-               $crd = $capture['card'];
+                $crd = $capture['card'];
             }
             $payment_data = [
                 'uid' => auth()->user()->id,
@@ -171,6 +171,7 @@ class RazorpayPaymentController extends Controller
                 'plan' => $request->input('plan'),
                 'status' => 'Success',
                 'card' => $crd ?? null,
+                'sid' => ($sid) ? $sid : null,
 
             ];
 
@@ -195,12 +196,19 @@ class RazorpayPaymentController extends Controller
         if (!$payment_data) {
             return redirect('/failed');
         }
-
+        $this->passSid($payment_data['sid']);
         // Pass the payment data to the success view
         return view('subscription.confirmation.success', compact('payment_data'));
     }
+    public function passSid($sid)
+    {
+        if (!empty($sid)) {
+            return view('company.company_create', compact('sid'));
+        } else {
+            return null;
+        }
 
-
+    }
     public function finalizeSubscription(Request $request)
     {
 
@@ -321,7 +329,12 @@ class RazorpayPaymentController extends Controller
                 'flag' => 0,
             ]);
         }
-        return true;
+        if (!empty($subscription->id)) {
+            $sid = $subscription->id;
+        } else {
+            $sid = null;
+        }
+        return $sid;
 
     }
 
@@ -361,17 +374,4 @@ class RazorpayPaymentController extends Controller
         return response()->json(['status' => 'success']);
     }
 
-    public function savePaymentDetails($subscriptionId, $userId, $razorpayPaymentId, $amount)
-    {
-        // Save the payment record in subscription_payments table
-        return SubscriptionPayment::create([
-            'subscription_id' => $subscriptionId,
-            'UID' => $userId,
-            'payment_type' => 'Online Payment',
-            'transaction_id' => $razorpayPaymentId,
-            'status' => 'Captured',
-            'amount_id' => $amount,
-            'payment_gateway' => 'Razorpay',
-        ]);
-    }
 }
