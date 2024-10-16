@@ -6,6 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
+use Spatie\Permission\Models\Permission;
 
 return new class extends Migration
 {
@@ -29,8 +30,32 @@ return new class extends Migration
         $superAdminRole = Role::create(['name' => 'super admin', 'guard_name' => 'web']);
         $supportAdminRole = Role::create(['name' => 'support admin', 'guard_name' => 'web']);
         $companySuperAdminRole = Role::create(['name' => 'company super admin', 'guard_name' => 'web']);
-        Role::create(['name' => 'company admin', 'guard_name' => 'web']);
+        $companyAdminRole =  Role::create(['name' => 'company admin', 'guard_name' => 'web']);
         Role::create(['name' => 'authenticated user', 'guard_name' => 'web']);
+
+        // Create permissions
+        $permissions = [
+            'manage users',
+            'view reports',
+            'edit profile',
+            'manage companies',
+            'view and support',
+            'manage company employees',
+            'access company all'
+        ];
+
+        // Create permissions dynamically and assign them as needed
+        foreach ($permissions as $permissionName) {
+            Permission::create(['name' => $permissionName]);
+        }
+
+        // Assign specific permissions to roles
+        $supportAdminRole->givePermissionTo('view and support');
+        $companySuperAdminRole->givePermissionTo('access company all');
+        $companyAdminRole->givePermissionTo('manage company employees');
+
+        // Assign all permissions to Super Admin
+        $superAdminRole->syncPermissions(Permission::all());
         // Insert users and assign role_name and role_id dynamically
         $superAdmin = User::create([
             'name' => 'lakshanaapriya',
@@ -87,5 +112,10 @@ return new class extends Migration
         Role::where('name', 'company super admin')->delete();
         Role::where('name', 'company admin')->delete();
         Role::where('name', 'authenticated user')->delete();
+
+        Permission::where('name', 'manage all')->delete();
+        Permission::where('name', 'view and support')->delete();
+        Permission::where('name', 'access company all')->delete();
+        Permission::where('name', 'manage company employees')->delete();
     }
 };
