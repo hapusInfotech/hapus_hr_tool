@@ -83,8 +83,9 @@ Route::get('/basic-landing', [CommonController::class, 'basicLanding'])->name('b
 Route::get('/extend-basic-landing', [CommonController::class, 'extendsBasisLanding'])->name('extends_basic.landing');
 
 // admin amount alter rout FUll CRUD
-Route::resource('subscription_amounts', SubscriptionAmountController::class);
-
+Route::middleware(['auth', 'role:super admin'])->group(function () {
+    Route::resource('subscription_amounts', SubscriptionAmountController::class);
+});
 // Home route (protected, user must be authenticated)
 Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware('auth');
 
@@ -97,6 +98,7 @@ Route::put('/company/{id}', [CompanyController::class, 'update'])->name('company
 Route::delete('/company/{id}', [CompanyController::class, 'destroy'])->name('company.company_destroy');
 Route::post('/check-company-prefix', [CompanyController::class, 'checkCompanyPrefix'])->name('company.checkPrefix');
 Route::get('company/thankyou', [CompanyController::class, 'thankyou'])->name('company.thankyou');
+
 
 //super admin Routes
 Route::get('/admin/home', [AdminController::class, 'super_admin_index'])
@@ -114,7 +116,8 @@ Route::get('/company/admin/home', [AdminController::class, 'company_super_admin_
 Route::get('/company/home', [AdminController::class, 'company_admin_index'])
     ->middleware('role:company admin')
     ->name('company.home');
-
+//
+//company
 Route::get('company/login', [CompanyLoginController::class, 'showLoginForm'])->name('company.login');
 Route::post('company/login', [CompanyLoginController::class, 'login'])->name('company.login.submit');
 Route::post('company/logout', [CompanyLoginController::class, 'logout'])->name('company.logout');
@@ -123,3 +126,4 @@ Route::post('company/password/reset', [CompanyLoginController::class, 'resetPass
 Route::get('company/dashboard', [CompanyLoginController::class, 'dashboard'])
     ->middleware('auth:company_login')
     ->name('company.dashboard');
+
