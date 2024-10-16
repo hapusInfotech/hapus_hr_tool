@@ -59,7 +59,6 @@ Route::get('/subscription-trial', [SubscriptionController::class, 'showTrial'])-
 // Route for the basic subscription (protected, user must be authenticated)
 Route::get('/subscription-basic', [SubscriptionController::class, 'showBasic'])->name('subscription.basic')->middleware('auth');
 
-
 Route::get('/finalize-subscription', [RazorpayPaymentController::class, 'finalizeSubscription'])->name('finalize.subscription');
 
 Route::get('/success', [RazorpayPaymentController::class, 'showSuccessPage'])->name('success.page');
@@ -82,11 +81,8 @@ Route::get('/trail-landing', [CommonController::class, 'trailLanding'])->name('t
 Route::get('/basic-landing', [CommonController::class, 'basicLanding'])->name('basic.landing');
 Route::get('/extend-basic-landing', [CommonController::class, 'extendsBasisLanding'])->name('extends_basic.landing');
 
-
 // admin amount alter rout FUll CRUD
 Route::resource('subscription_amounts', SubscriptionAmountController::class);
-
-
 
 // Home route (protected, user must be authenticated)
 Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware('auth');
@@ -98,6 +94,8 @@ Route::post('/company', [CompanyController::class, 'store'])->name('company.stor
 Route::get('/company/{id}/edit', [CompanyController::class, 'edit'])->name('company.company_edit');
 Route::put('/company/{id}', [CompanyController::class, 'update'])->name('company.company_update');
 Route::delete('/company/{id}', [CompanyController::class, 'destroy'])->name('company.company_destroy');
+Route::post('/check-company-prefix', [CompanyController::class, 'checkCompanyPrefix'])->name('company.checkPrefix');
+
 
 //super admin Routes
 Route::get('/admin/home', [AdminController::class, 'super_admin_index'])

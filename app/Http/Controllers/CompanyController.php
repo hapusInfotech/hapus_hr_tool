@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Artisan;
 
 // Assuming you have a Company model
 
@@ -31,16 +34,31 @@ class CompanyController extends Controller
         // Store the company data in the database
         Company::create([
             'company_name' => $request->input('company_name'),
+            'company_prefix' => $request->input('company_prefix'),
             'company_type' => $request->input('company_type'),
             'company_email' => $request->input('company_email'),
             'company_phone_number' => $request->input('company_phone_number'),
             'company_address' => $this->formatAddress($request), // Store the full address as a single field in the specified format
             'uid' => auth()->id(), // Assuming you're storing the currently authenticated user's ID
-            'subscription_id' => 5, // Set this value as needed
+            'subscription_id' => 1, // Set this value as needed
             'roles_id' => 1, // Default role_id if needed
             'email_status' => 0, // Default to 0
             'company_status' => 1, // Active by default
         ]);
+
+        // // Dynamically create a table based on the company's prefix or name
+        // $tableName = $request->company_prefix . '_employees'; // Example table name
+        // if (!Schema::hasTable($tableName)) {
+        //     Schema::create($tableName, function (Blueprint $table) {
+        //         $table->id();
+        //         $table->string('name'); // You can customize the columns as needed
+        //         $table->string('description')->nullable();
+        //         $table->timestamps();
+        //     });
+        // }
+
+        // // Optionally, generate a model for the newly created table
+        // Artisan::call('make:model', ['name' => ucfirst($request->company_prefix)]);
 
         // Redirect to the form with a success message
         return redirect()->route('company.company_create')->with('success', 'Company created successfully!');
@@ -132,4 +150,12 @@ class CompanyController extends Controller
         $request->input('state') . '-' . $request->input('state_name') . ', ' .
         $request->input('company_pincode');
     }
+
+    public function checkCompanyPrefix(Request $request)
+    {
+        $exists = Company::where('company_prefix', $request->company_prefix)->exists();
+
+        return response()->json(['exists' => $exists]);
+    }
+
 }
