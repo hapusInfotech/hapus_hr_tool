@@ -17,6 +17,31 @@ use Illuminate\Support\Facades\Route;
 // Authentication routes (login, register, etc.)
 Auth::routes();
 
+//for refrence
+// Route::get('/', function () {
+//     // Check if the user is authenticated
+//     if (Auth::check()) {
+//         // Get the authenticated user
+//         $user = Auth::user();
+        
+//         // Check the user's role and redirect to the appropriate home page
+//         if ($user->hasRole('super admin')) {
+//             return redirect('/admin/home'); // Admin home page
+//         } elseif ($user->hasRole('manager')) {
+//             return redirect('/manager-home'); // Manager home page
+//         } elseif ($user->hasRole('employee')) {
+//             return redirect('/employee-home'); // Employee home page
+//         } elseif ($user->hasRole('customer')) {
+//             return redirect('/customer-home'); // Customer home page
+//         } else {
+//             return redirect('/default-home'); // Default home page for other roles
+//         }
+//     } else {
+//         // If the user is not logged in, call the QuestPageController home method
+//         return app(QuestPageController::class)->home();
+//     }
+// })->name('guest_home');
+
 //guest route
 Route::get('/', function () {
     // Check if the user is authenticated

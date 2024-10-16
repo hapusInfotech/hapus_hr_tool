@@ -14,16 +14,16 @@ class DemoController extends Controller
 
     public function submit(Request $request)
     {
-
+ 
         // Create a new demo request
         DemoRequest::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone_number' => $request->phone_number,
-            'company' => $request->company,
-            'country' => $request->country, // Store country name
-            'state' => $request->state, // Store state name
-            'message' => $request->message,
+            'name' =>$request->input('name'),
+            'email' =>  $request->input('email'),
+            'phone_number' => $request->input('phone_number'),
+            'company' => $request->input('company'),
+            'country' =>  $request->input('country'), // Store country name
+            'state' => $request->input('state'), // Store state name
+            'message' =>  $request->input('message'),
         ]);
 
         // Redirect back with a success message

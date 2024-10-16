@@ -1,5 +1,4 @@
-@extends('layouts.common.commonUserDashboard')
-
+@extends('layouts.admin.adminDashboardLayout')
 @section('content')
 <div class="container">
     <h2 class="text-center">Subscription Amounts</h2>
@@ -30,11 +29,14 @@
                     <td>{{ $subscriptionAmount->amount }}</td>
                     <td>{{ $subscriptionAmount->flag }}</td>
                     <td>
-                        <a href="{{ route('subscription_amounts.edit', $subscriptionAmount) }}" class="btn btn-warning btn-sm">Edit</a>
-                        <form action="{{ route('subscription_amounts.destroy', $subscriptionAmount) }}" method="POST" class="d-inline">
+                        <a href="{{ route('subscription_amounts.edit', $subscriptionAmount) }}"
+                            class="btn btn-warning btn-sm">Edit</a>
+                        <form action="{{ route('subscription_amounts.destroy', $subscriptionAmount) }}" method="POST"
+                            class="d-inline">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this item?');">Delete</button>
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Are you sure you want to delete this item?');">Delete</button>
                         </form>
                     </td>
                 </tr>
