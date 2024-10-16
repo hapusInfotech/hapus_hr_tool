@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
+use App\Services\CompanyDynamicTableService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Schema;
@@ -13,6 +14,11 @@ use Illuminate\Support\Facades\Artisan;
 
 class CompanyController extends Controller
 {
+    protected $companyDynamicTableService;
+    public function __construct(CompanyDynamicTableService $companyDynamicTableService)
+    {
+        $this->companyDynamicTableService = $companyDynamicTableService;
+    }
     public function index()
     {
         // Fetch all companies with pagination or without, depending on your needs
@@ -23,24 +29,33 @@ class CompanyController extends Controller
     }
 
     // Display the form
-    public function create()
+    public function create(Request $request)
     {
-        return view('company.company_create');
+        $n_sid = $request->input('sid');
+        if (!empty($n_sid)) {
+            $sid = $n_sid;
+        } else {
+            $sid = null;
+        }
+// dd(auth()->user()->id);
+        return view('company.company_create', compact('sid'));
     }
 
     // Store the form data
     public function store(Request $request)
     {
         // Store the company data in the database
+        $sid = $request->input('sid');
+
         Company::create([
             'company_name' => $request->input('company_name'),
             'company_prefix' => $request->input('company_prefix'),
             'company_type' => $request->input('company_type'),
             'company_email' => $request->input('company_email'),
             'company_phone_number' => $request->input('company_phone_number'),
-            'company_address' => $this->formatAddress($request), // Store the full address as a single field in the specified format
+            'company_address' => $this->formatAddress($request),
             'uid' => auth()->id(), // Assuming you're storing the currently authenticated user's ID
-            'subscription_id' => 1, // Set this value as needed
+            'subscription_id' => $sid, // Set this value as needed
             'roles_id' => 1, // Default role_id if needed
             'email_status' => 0, // Default to 0
             'company_status' => 1, // Active by default
@@ -60,8 +75,10 @@ class CompanyController extends Controller
         // // Optionally, generate a model for the newly created table
         // Artisan::call('make:model', ['name' => ucfirst($request->company_prefix)]);
 
+        $this->companyDynamicTableService->createEmployeeTable($request);
         // Redirect to the form with a success message
-        return redirect()->route('company.company_create')->with('success', 'Company created successfully!');
+        return redirect()->route('company.company_create')->with('success', 'Company created and table and model generated successfully!');
+
     }
 
     public function edit($encryptedId)

@@ -106,6 +106,10 @@ Route::get('/support/home', [AdminController::class, 'support_admin_index'])
     ->middleware('role:support admin')
     ->name('support.home');
 
+Route::get('/company/admin/home', [AdminController::class, 'company_super_admin_index'])
+    ->middleware('role:company super admin')
+    ->name('company.admin.home');
+
 Route::get('/company/home', [AdminController::class, 'company_admin_index'])
     ->middleware('role:company admin')
     ->name('company.home');

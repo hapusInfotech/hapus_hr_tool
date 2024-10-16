@@ -42,6 +42,12 @@ class AdminController extends Controller
         // You can pass any data to the view if needed
         return view('home');
     }
+    public function company_super_admin_index()
+    {
+        // You can pass any data to the view if needed
+        return view('home');
+
+    }
     public function company_admin_index()
     {
         // You can pass any data to the view if needed

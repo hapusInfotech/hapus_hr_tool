@@ -29,7 +29,8 @@
                 </div>
             </div>
 
-            <h1 class="card__price"><span>{{ $payment_data['symbol'] }}</span>{{ $payment_data['amount']/100 }}<span>.00</span></h1>
+            <h1 class="card__price"><span>{{ $payment_data['symbol'] }}</span>{{ $payment_data['amount']/100
+                }}<span>.00</span></h1>
 
             <p class="card__method">Payment method</p>
             @if($payment_data['card'] != null)
@@ -39,7 +40,8 @@
 
                 <div class="card__card-details">
                     <p class="card__card-type">Credit / debit card</p>
-                    <h5 class="card__card-number ">{{ $payment_data['card']['network'] }} ending in {{ $payment_data['card']['last4'] }}</h5>
+                    <h5 class="card__card-number ">{{ $payment_data['card']['network'] }} ending in {{
+                        $payment_data['card']['last4'] }}</h5>
                 </div>
             </div>
             @endif
@@ -47,12 +49,12 @@
 
                 <div class="card-body">
                     <h5 class="card-title">Transaction Success !!</h5>
-                    <p class="card-text">Transaction Id :{{ $payment_data['payment_id'] }} 
+                    <p class="card-text">Transaction Id :{{ $payment_data['payment_id'] }}
                         <span>Funds is not Refundble</span>
                     </p>
                 </div>
             </div>
-
+            <a href="{{ route('company.company_create',['sid' =>$payment_data['sid'] ]) }}"> Create Company</a>
         </div>
 
         <div class="card__tags">
