@@ -84,6 +84,20 @@ $(document).ready(function () {
     });
 
     $("#company_prefix").on("input", function () {
+        var inputVal = $(this).val();
+        var lowerCaseVal = inputVal.toLowerCase();
+
+        // Check if the input contains capital letters
+        if (inputVal !== lowerCaseVal) {
+            $(".company-prefix-error").text("Please enter only small letters.");
+            $("#company_prefix").addClass("is-invalid");
+        } else {
+            $(".company-prefix-error").text(""); // Clear the message if input is valid
+            $("#company_prefix").removeClass("is-invalid");
+        }
+
+        // Convert the input to lowercase and only allow lowercase letters
+        // $(this).val(lowerCaseVal.replace(/[^a-z]/g, "")); // Allow only lowercase letters
         var companyPrefix = $(this).val();
 
         if (companyPrefix.length > 0) {
@@ -109,6 +123,36 @@ $(document).ready(function () {
         } else {
             $("#company_prefix").removeClass("is-invalid");
             $(".company-prefix-error").text("");
+        }
+    });
+
+    $("#company_email").on("change", function () {
+
+        var companyEmail = $(this).val();
+
+        if (companyEmail.length > 0) {
+            $.ajax({
+                url: "/check-company-email", // Corrected URL without parameter
+                method: "POST",
+                data: {
+                    company_email: companyEmail,
+                    _token: $('meta[name="csrf-token"]').attr("content"), // Use the CSRF token
+                },
+                success: function (response) {
+                    if (response.exists) {
+                        $("#company_email").addClass("is-invalid");
+                        $(".company-email-error").text(
+                            "Company email is already taken."
+                        );
+                    } else {
+                        $("#company_email").removeClass("is-invalid");
+                        $(".company-email-error").text("");
+                    }
+                },
+            });
+        } else {
+            $("#company_email").removeClass("is-invalid");
+            $(".company-email-error").text("");
         }
     });
 });

@@ -62,10 +62,7 @@ class CompanyController extends Controller
             'company_status' => 1, // Active by default
         ]);
 
-        $this->companyDynamicTableService->createDepartmentTable($request->company_prefix, $company->id);
-        $this->companyDynamicTableService->createRolesTable($request->company_prefix, $company->id);
-        $this->companyDynamicTableService->createMediaTable($request->company_prefix, $company->id);
-        $this->companyDynamicTableService->createFileTable($request->company_prefix, $company->id);
+        $this->companyDynamicTableService->createCompanyTables($request->company_prefix, $company->id);
 
         // Generate a strong random password
         $generatedPassword = Str::random(12); // You can make this more complex if required
@@ -180,6 +177,14 @@ class CompanyController extends Controller
 
         return response()->json(['exists' => $exists]);
     }
+
+    public function checkCompanyEmail(Request $request)
+    {
+        $exists = Company::where('company_email', $request->company_email)->exists();
+
+        return response()->json(['exists' => $exists]);
+    }
+
 
     public function thankyou(Request $request)
     {

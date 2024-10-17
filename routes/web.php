@@ -23,7 +23,7 @@ Auth::routes();
 //     if (Auth::check()) {
 //         // Get the authenticated user
 //         $user = Auth::user();
-        
+
 //         // Check the user's role and redirect to the appropriate home page
 //         if ($user->hasRole('super admin')) {
 //             return redirect('/admin/home'); // Admin home page
@@ -122,8 +122,8 @@ Route::get('/company/{id}/edit', [CompanyController::class, 'edit'])->name('comp
 Route::put('/company/{id}', [CompanyController::class, 'update'])->name('company.company_update');
 Route::delete('/company/{id}', [CompanyController::class, 'destroy'])->name('company.company_destroy');
 Route::post('/check-company-prefix', [CompanyController::class, 'checkCompanyPrefix'])->name('company.checkPrefix');
+Route::post('/check-company-email', [CompanyController::class, 'checkCompanyEmail'])->name('company.checkEmail');
 Route::get('company/thankyou', [CompanyController::class, 'thankyou'])->name('company.thankyou');
-
 
 //super admin Routes
 Route::get('/admin/home', [AdminController::class, 'super_admin_index'])
@@ -151,4 +151,3 @@ Route::post('company/password/reset', [CompanyLoginController::class, 'resetPass
 Route::get('company/dashboard', [CompanyLoginController::class, 'dashboard'])
     ->middleware('auth:company_login')
     ->name('company.dashboard');
-
