@@ -1,7 +1,6 @@
 @extends('layouts.admin.adminDashboardLayout')
 @section('head')
-<meta name="csrf-token" content="{{ csrf_token() }}">
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 @endsection
 @section('content')
     <div class="container">
@@ -159,7 +158,9 @@
                                         @foreach ($companies as $index => $company)
                                             <tr>
                                                 <td>{{ $index + 1 }}</td> <!-- Auto-incrementing S.No -->
-                                                <td>{{ $company->company_name }}</td>
+                                                <td><a href="{{ route('admin.company.tables', ['id' => $company->id]) }}">
+                                                        {{ $company->company_name }}
+                                                    </a></td>
                                                 <td>{{ $company->company_type }}</td>
                                                 <td>{{ $company->company_email }}</td>
                                                 <td>{{ $company->company_phone_number }}</td>
@@ -195,8 +196,9 @@
                                                 <td>{{ $company->email_status == 1 ? 'Active' : 'Inactive' }}</td>
                                                 <td>
                                                     <input type="checkbox" class="company-status-toggle"
-                                                    data-company-id="{{ $company->id }}"
-                                                    {{ $company->company_status == 1 ? 'checked' : '' }}> <span class="company-status">{{ $company->company_status == 1 ? 'Active' : 'Inactive' }}</span>
+                                                        data-company-id="{{ $company->id }}"
+                                                        {{ $company->company_status == 1 ? 'checked' : '' }}> <span
+                                                        class="company-status">{{ $company->company_status == 1 ? 'Active' : 'Inactive' }}</span>
                                                 </td>
 
                                                 <td>

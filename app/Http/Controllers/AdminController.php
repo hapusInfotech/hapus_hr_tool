@@ -65,4 +65,71 @@ class AdminController extends Controller
 
     }
 
+    public function showCompanyTables($id)
+    {
+        // Find the company by ID
+        $company = Company::findOrFail($id);
+
+        // You can fetch other data related to the company as needed here
+        // The table prefix format
+        $prefix = "{$company->id}_{$company->company_prefix}_"; // e.g., 123_companyprefix_
+
+        // Query the information schema to get tables with the given prefix
+        $tables = \DB::select("SELECT table_name
+                           FROM information_schema.tables
+                           WHERE table_schema = ?
+                           AND table_name LIKE ?", [env('DB_DATABASE'), $prefix . '%']);
+
+        // Return a view and pass the company data to it
+        return view('admin.company.tables', compact('company', 'tables'));
+    }
+
+    public function deleteCompanyTable($table)
+    {
+        try {
+            // Sanitize table name to avoid potential SQL injection
+            $table = preg_replace('/[^a-zA-Z0-9_]/', '', $table);
+
+            // Drop foreign key constraints if any
+            $this->dropForeignKeys($table);
+
+            // Drop the table
+            \DB::statement("DROP TABLE $table");
+
+
+            // Redirect back with success message
+            return redirect()->back()->with('success', "Table '$table' has been deleted successfully.");
+        } catch (\Exception $e) {
+            // Handle error (if table doesn't exist or some other error)
+            return redirect()->back()->with('error', "Error deleting table '$table': " . $e->getMessage());
+        }
+    }
+
+    private function dropForeignKeys($table)
+    {
+        // Drop foreign keys within the table
+        $foreignKeys = \DB::select("
+        SELECT CONSTRAINT_NAME
+        FROM information_schema.KEY_COLUMN_USAGE
+        WHERE TABLE_NAME = ? AND CONSTRAINT_NAME != 'PRIMARY'
+        AND REFERENCED_TABLE_NAME IS NOT NULL", [$table]);
+
+        // Loop through and drop each foreign key constraint
+        foreach ($foreignKeys as $foreignKey) {
+            \DB::statement("ALTER TABLE $table DROP FOREIGN KEY {$foreignKey->CONSTRAINT_NAME}");
+        }
+
+        // Drop foreign keys in other tables that reference this table
+        $referencingForeignKeys = \DB::select("
+        SELECT TABLE_NAME, CONSTRAINT_NAME
+        FROM information_schema.KEY_COLUMN_USAGE
+        WHERE REFERENCED_TABLE_NAME = ?
+        AND CONSTRAINT_NAME != 'PRIMARY'", [$table]);
+
+        // Loop through and drop foreign keys in referencing tables
+        foreach ($referencingForeignKeys as $foreignKey) {
+            \DB::statement("ALTER TABLE {$foreignKey->TABLE_NAME} DROP FOREIGN KEY {$foreignKey->CONSTRAINT_NAME}");
+        }
+    }
+
 }
