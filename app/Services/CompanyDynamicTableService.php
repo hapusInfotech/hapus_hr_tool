@@ -3,8 +3,6 @@
 namespace App\Services;
 
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 
 class CompanyDynamicTableService
@@ -44,43 +42,6 @@ class CompanyDynamicTableService
             });
         }
 
-        // Generate the model for the department table with foreign keys and relationships
-        $this->generateDepartmentModel($companyPrefix, $id);
-    }
-
-    private function generateDepartmentModel($companyPrefix, $id)
-    {
-        // Create the department model name based on company prefix
-        $modelName = ucfirst($companyPrefix) . 'Department';
-
-        // Path to place the model inside the "Company" directory
-        $modelNamespacePath = "Company/{$modelName}";
-
-        // Generate the department model using the Artisan command and place it inside the "Company" directory
-        Artisan::call('make:model', ['name' => $modelNamespacePath]);
-
-        // Path to the generated department model
-        $modelPath = app_path("Models/Company/{$modelName}.php");
-
-        // Define the fillable fields for the department model
-        $fillableFieldsString = "['department', 'weight', 'company_id', 'uid']";
-
-        // Add the table, fillable properties, and relationships to the generated department model
-        if (File::exists($modelPath)) {
-            $modelContent = File::get($modelPath);
-
-            // Inject the table name, fillable fields, and relationships (belongsTo)
-            $modelContent = str_replace(
-                'use HasFactory;',
-                "use HasFactory;\n\n    protected \$table = '{$id}_{$companyPrefix}_departments';\n\n    protected \$fillable = {$fillableFieldsString};\n\n" .
-                "    public function company() {\n        return \$this->belongsTo(\\App\\Models\\Company::class);\n    }\n\n" .
-                "    public function user() {\n        return \$this->belongsTo(\\App\\Models\\CompanyUser::class, 'uid');\n    }",
-                $modelContent
-            );
-
-            // Save the updated department model content
-            File::put($modelPath, $modelContent);
-        }
     }
 
     private function createRolesTable($companyPrefix, $id)
@@ -103,44 +64,6 @@ class CompanyDynamicTableService
             });
         }
 
-        // Generate the model for the roles table with relationships
-        $this->generateRolesModel($companyPrefix, $id);
-    }
-
-    private function generateRolesModel($companyPrefix, $id)
-    {
-        $table_prefix = ucfirst($companyPrefix);
-        // Create the roles model name based on company prefix
-        $modelName = $table_prefix . 'Role';
-        // Path to place the model inside the "Company" directory
-        $modelNamespacePath = "Company/{$modelName}";
-
-        // Generate the roles model using the Artisan command
-        Artisan::call('make:model', ['name' => $modelNamespacePath]);
-
-        // Path to the generated roles model
-        $modelPath = app_path("Models/Company/{$modelName}.php");
-
-        // Define the fillable fields for the roles model
-        $fillableFieldsString = "['roles', 'weight', 'department_id', 'company_id', 'uid']";
-
-        // Add the table, fillable properties, and relationships to the generated roles model
-        if (File::exists($modelPath)) {
-            $modelContent = File::get($modelPath);
-
-            // Inject the table name, fillable fields, and relationships (belongsTo)
-            $modelContent = str_replace(
-                'use HasFactory;',
-                "use HasFactory;\n\n    protected \$table = '{$id}_{$companyPrefix}_roles';\n\n    protected \$fillable = {$fillableFieldsString};\n\n" .
-                "    public function department() {\n        return \$this->belongsTo(\\App\\Models\\Company\\{$table_prefix}Department::class);\n    }\n\n" .
-                "    public function company() {\n        return \$this->belongsTo(\\App\\Models\\Company::class);\n    }\n\n" .
-                "    public function user() {\n        return \$this->belongsTo(\\App\\Models\\CompanyUser::class, 'uid');\n    }",
-                $modelContent
-            );
-
-            // Save the updated roles model content
-            File::put($modelPath, $modelContent);
-        }
     }
 
     // Method to create the media table with foreign key for company_users
@@ -159,44 +82,6 @@ class CompanyDynamicTableService
                 // Define foreign keys
                 $table->foreign('uploaded_by')->references('id')->on('company_users')->onDelete('cascade');
             });
-        }
-
-        // Generate the model for the media table with relationships
-        $this->generateMediaModel($companyPrefix, $id);
-    }
-
-    // Helper method to generate model for media
-    private function generateMediaModel($companyPrefix, $id)
-    {
-        // Create the media model name based on company prefix
-        $modelName = ucfirst($companyPrefix) . 'Media';
-
-        // Path to place the model inside the "Company" directory
-        $modelNamespacePath = "Company/{$modelName}";
-
-        // Generate the roles model using the Artisan command
-        Artisan::call('make:model', ['name' => $modelNamespacePath]);
-
-        // Path to the generated roles model
-        $modelPath = app_path("Models/Company/{$modelName}.php");
-
-        // Define the fillable fields for the media model
-        $fillableFieldsString = "['media_name', 'media_type', 'media_path', 'uploaded_by']";
-
-        // Add the table, fillable properties, and relationships to the generated media model
-        if (File::exists($modelPath)) {
-            $modelContent = File::get($modelPath);
-
-            // Inject the table name, fillable fields, and relationships (belongsTo for uid)
-            $modelContent = str_replace(
-                'use HasFactory;',
-                "use HasFactory;\n\n    protected \$table = '{$id}_{$companyPrefix}_media';\n\n    protected \$fillable = {$fillableFieldsString};\n\n" .
-                "    public function user() {\n        return \$this->belongsTo(\\App\\Models\\CompanyUser::class, 'uid');\n    }",
-                $modelContent
-            );
-
-            // Save the updated media model content
-            File::put($modelPath, $modelContent);
         }
     }
 
@@ -218,43 +103,6 @@ class CompanyDynamicTableService
             });
         }
 
-        // Generate the model for the file table with relationships
-        $this->generateFileModel($companyPrefix, $id);
-    }
-
-    // Helper method to generate model for file
-    private function generateFileModel($companyPrefix, $id)
-    {
-        // Create the file model name based on company prefix
-        $modelName = ucfirst($companyPrefix) . 'File';
-
-        // Path to place the model inside the "Company" directory
-        $modelNamespacePath = "Company/{$modelName}";
-
-        // Generate the roles model using the Artisan command
-        Artisan::call('make:model', ['name' => $modelNamespacePath]);
-
-        // Path to the generated roles model
-        $modelPath = app_path("Models/Company/{$modelName}.php");
-
-        // Define the fillable fields for the file model
-        $fillableFieldsString = "['file_name', 'file_type', 'file_path', 'uploaded_by']";
-
-        // Add the table, fillable properties, and relationships to the generated file model
-        if (File::exists($modelPath)) {
-            $modelContent = File::get($modelPath);
-
-            // Inject the table name, fillable fields, and relationships (belongsTo for uid)
-            $modelContent = str_replace(
-                'use HasFactory;',
-                "use HasFactory;\n\n    protected \$table = '{$id}_{$companyPrefix}_files';\n\n    protected \$fillable = {$fillableFieldsString};\n\n" .
-                "    public function user() {\n        return \$this->belongsTo(\\App\\Models\\CompanyUser::class, 'uid');\n    }",
-                $modelContent
-            );
-
-            // Save the updated file model content
-            File::put($modelPath, $modelContent);
-        }
     }
 
     private function createShiftsTable($companyPrefix, $companyId)
@@ -283,41 +131,7 @@ class CompanyDynamicTableService
                 $table->timestamps(); // Automatically adds created_at and updated_at fields
             });
         }
-        $this->generateShiftsModel($companyPrefix, $companyId);
-    }
 
-    private function generateShiftsModel($companyPrefix, $companyId)
-    {
-        // Create the model name based on company prefix
-        $modelName = ucfirst($companyPrefix) . 'Shift';
-
-        // Path to place the model inside the "Company" directory
-        $modelNamespacePath = "Company/{$modelName}";
-
-        // Generate the shifts model using the Artisan command
-        Artisan::call('make:model', ['name' => $modelNamespacePath]);
-
-        // Path to the generated shifts model
-        $modelPath = app_path("Models/Company/{$modelName}.php");
-
-        // Define the fillable fields for the shifts model
-        $fillableFieldsString = "['shift_type', 'shift_name', 'shift_start_time', 'shift_end_time', 'shift_liberal_hrs', 'uid']";
-
-        // Add the table, fillable properties, and relationships to the generated model
-        if (File::exists($modelPath)) {
-            $modelContent = File::get($modelPath);
-
-            // Inject the table name, fillable fields, and relationships (belongsTo)
-            $modelContent = str_replace(
-                'use HasFactory;',
-                "use HasFactory;\n\n    protected \$table = '{$companyId}_{$companyPrefix}_shifts';\n\n    protected \$fillable = {$fillableFieldsString};\n\n" .
-                "    public function user() {\n        return \$this->belongsTo(\\App\\Models\\CompanyUser::class, 'uid');\n    }",
-                $modelContent
-            );
-
-            // Save the updated shifts model content
-            File::put($modelPath, $modelContent);
-        }
     }
 
     private function createEmployeesTable($companyPrefix, $companyId)
@@ -371,43 +185,6 @@ class CompanyDynamicTableService
             });
         }
 
-        $this->generateEmployeeModel($companyPrefix, $companyId);
-    }
-
-    private function generateEmployeeModel($companyPrefix, $companyId)
-    {
-        // Create the employee model name based on company prefix
-        $modelName = ucfirst($companyPrefix) . 'Employee';
-
-        // Path to place the model inside the "Company" directory
-        $modelNamespacePath = "Company/{$modelName}";
-
-        // Generate the employee model using the Artisan command
-        Artisan::call('make:model', ['name' => $modelNamespacePath]);
-
-        // Path to the generated employee model
-        $modelPath = app_path("Models/Company/{$modelName}.php");
-
-        // Define the fillable fields for the employee model
-        $fillableFieldsString = "['emp_id', 'emp_name', 'emp_email', 'emp_username', 'emp_gender', 'emp_profile_id', 'emp_role', 'emp_role_id', 'emp_uid', 'account_creator_uid', 'active_status', 'company_id']";
-
-        // Add the table, fillable properties, and relationships to the generated employee model
-        if (File::exists($modelPath)) {
-            $modelContent = File::get($modelPath);
-
-            // Inject the table name, fillable fields, and relationships (belongsTo)
-            $modelContent = str_replace(
-                'use HasFactory;',
-                "use HasFactory;\n\n    protected \$table = '{$companyId}_{$companyPrefix}_employees';\n\n    protected \$fillable = {$fillableFieldsString};\n\n" .
-                "    public function company() {\n        return \$this->belongsTo(\\App\\Models\\Company::class);\n    }\n\n" .
-                "    public function user() {\n        return \$this->belongsTo(\\App\\Models\\CompanyUser::class, 'emp_uid');\n    }\n\n" .
-                "    public function accountCreator() {\n        return \$this->belongsTo(\\App\\Models\\CompanyUser::class, 'account_creator_uid');\n    }",
-                $modelContent
-            );
-
-            // Save the updated employee model content
-            File::put($modelPath, $modelContent);
-        }
     }
 
     private function createEmployeeEducationalDetailsTable($companyPrefix, $companyId)
@@ -441,44 +218,6 @@ class CompanyDynamicTableService
                 $table->timestamps(); // Automatically adds created_at and updated_at fields
             });
         }
-        $this->generateEmployeeEducationalDetailsModel($companyPrefix, $companyId);
-    }
-
-    private function generateEmployeeEducationalDetailsModel($companyPrefix, $companyId)
-    {
-        $table_prefix = ucfirst($companyPrefix);
-
-        // Create the model name based on company prefix
-        $modelName = $table_prefix . 'EmployeeEducationalDetail';
-
-        // Path to place the model inside the "Company" directory
-        $modelNamespacePath = "Company/{$modelName}";
-
-        // Generate the employee educational details model using the Artisan command
-        Artisan::call('make:model', ['name' => $modelNamespacePath]);
-
-        // Path to the generated employee educational details model
-        $modelPath = app_path("Models/Company/{$modelName}.php");
-
-        // Define the fillable fields for the employee educational details model
-        $fillableFieldsString = "['emp_id', 'institute_name', 'degree_diploma', 'specialization', 'date_of_completion', 'uid']";
-
-        // Add the table, fillable properties, and relationships to the generated model
-        if (File::exists($modelPath)) {
-            $modelContent = File::get($modelPath);
-
-            // Inject the table name, fillable fields, and relationships (belongsTo)
-            $modelContent = str_replace(
-                'use HasFactory;',
-                "use HasFactory;\n\n    protected \$table = '{$companyId}_{$companyPrefix}_employee_educational_details';\n\n    protected \$fillable = {$fillableFieldsString};\n\n" .
-                "    public function employee() {\n        return \$this->belongsTo(\\App\\Models\\Company\\{$table_prefix}Employee::class, 'emp_id', 'emp_id');\n    }\n\n" .
-                "    public function user() {\n        return \$this->belongsTo(\\App\\Models\\CompanyUser::class, 'uid');\n    }",
-                $modelContent
-            );
-
-            // Save the updated employee educational details model content
-            File::put($modelPath, $modelContent);
-        }
     }
 
     private function createEmployeeExperienceDetailsTable($companyPrefix, $companyId)
@@ -511,44 +250,6 @@ class CompanyDynamicTableService
 
                 $table->timestamps(); // Automatically adds created_at and updated_at fields
             });
-        }
-        $this->generateEmployeeExperienceDetailsModel($companyPrefix, $companyId);
-    }
-
-    private function generateEmployeeExperienceDetailsModel($companyPrefix, $companyId)
-    {
-        $table_prefix = ucfirst($companyPrefix);
-
-        // Create the model name based on company prefix
-        $modelName = $table_prefix . 'EmployeeExperienceDetail';
-
-        // Path to place the model inside the "Company" directory
-        $modelNamespacePath = "Company/{$modelName}";
-
-        // Generate the employee experience details model using the Artisan command
-        Artisan::call('make:model', ['name' => $modelNamespacePath]);
-
-        // Path to the generated employee experience details model
-        $modelPath = app_path("Models/Company/{$modelName}.php");
-
-        // Define the fillable fields for the employee experience details model
-        $fillableFieldsString = "['emp_id', 'organization_name', 'designation', 'date_of_joining', 'date_of_releaving', 'uid']";
-
-        // Add the table, fillable properties, and relationships to the generated model
-        if (File::exists($modelPath)) {
-            $modelContent = File::get($modelPath);
-
-            // Inject the table name, fillable fields, and relationships (belongsTo)
-            $modelContent = str_replace(
-                'use HasFactory;',
-                "use HasFactory;\n\n    protected \$table = '{$companyId}_{$companyPrefix}_employee_experience_details';\n\n    protected \$fillable = {$fillableFieldsString};\n\n" .
-                "    public function employee() {\n        return \$this->belongsTo(\\App\\Models\\Company\\{$table_prefix}Employee::class, 'emp_id', 'emp_id');\n    }\n\n" .
-                "    public function user() {\n        return \$this->belongsTo(\\App\\Models\\CompanyUser::class, 'uid');\n    }",
-                $modelContent
-            );
-
-            // Save the updated employee experience details model content
-            File::put($modelPath, $modelContent);
         }
     }
 
@@ -585,44 +286,6 @@ class CompanyDynamicTableService
 
                 $table->timestamps(); // Automatically adds created_at and updated_at fields
             });
-        }
-        $this->generateEmployeePersonalDetailsModel($companyPrefix, $companyId);
-    }
-
-    private function generateEmployeePersonalDetailsModel($companyPrefix, $companyId)
-    {
-        $table_prefix = ucfirst($companyPrefix);
-
-        // Create the model name based on company prefix
-        $modelName = $table_prefix . 'EmployeePersonalDetail';
-
-        // Path to place the model inside the "Company" directory
-        $modelNamespacePath = "Company/{$modelName}";
-
-        // Generate the employee personal details model using the Artisan command
-        Artisan::call('make:model', ['name' => $modelNamespacePath]);
-
-        // Path to the generated employee personal details model
-        $modelPath = app_path("Models/Company/{$modelName}.php");
-
-        // Define the fillable fields for the employee personal details model
-        $fillableFieldsString = "['emp_id', 'date_of_birth', 'marital_status', 'blood_group', 'present_address', 'permanent_address', 'personal_mobile_no', 'work_mobile_no', 'uid']";
-
-        // Add the table, fillable properties, and relationships to the generated model
-        if (File::exists($modelPath)) {
-            $modelContent = File::get($modelPath);
-
-            // Inject the table name, fillable fields, and relationships (belongsTo)
-            $modelContent = str_replace(
-                'use HasFactory;',
-                "use HasFactory;\n\n    protected \$table = '{$companyId}_{$companyPrefix}_employee_personal_details';\n\n    protected \$fillable = {$fillableFieldsString};\n\n" .
-                "    public function employee() {\n        return \$this->belongsTo(\\App\\Models\\Company\\{$table_prefix}Employee::class, 'emp_id', 'emp_id');\n    }\n\n" .
-                "    public function user() {\n        return \$this->belongsTo(\\App\\Models\\CompanyUser::class, 'uid');\n    }",
-                $modelContent
-            );
-
-            // Save the updated employee personal details model content
-            File::put($modelPath, $modelContent);
         }
     }
 
@@ -670,46 +333,6 @@ class CompanyDynamicTableService
             });
         }
 
-        $this->generateEmployeeWorkDetailsModel($companyPrefix, $companyId);
-    }
-
-    private function generateEmployeeWorkDetailsModel($companyPrefix, $companyId)
-    {
-        $table_prefix = ucfirst($companyPrefix);
-
-        // Create the model name based on company prefix
-        $modelName = $table_prefix . 'EmployeeWorkDetail';
-
-        // Path to place the model inside the "Company" directory
-        $modelNamespacePath = "Company/{$modelName}";
-
-        // Generate the employee work details model using the Artisan command
-        Artisan::call('make:model', ['name' => $modelNamespacePath]);
-
-        // Path to the generated employee work details model
-        $modelPath = app_path("Models/Company/{$modelName}.php");
-
-        // Define the fillable fields for the employee work details model
-        $fillableFieldsString = "['emp_id', 'department_id', 'shift_id', 'location', 'designation', 'date_of_joining', 'uid']";
-
-        // Add the table, fillable properties, and relationships to the generated model
-        if (File::exists($modelPath)) {
-            $modelContent = File::get($modelPath);
-
-            // Inject the table name, fillable fields, and relationships (belongsTo)
-            $modelContent = str_replace(
-                'use HasFactory;',
-                "use HasFactory;\n\n    protected \$table = '{$companyId}_{$companyPrefix}_employee_work_details';\n\n    protected \$fillable = {$fillableFieldsString};\n\n" .
-                "    public function employee() {\n        return \$this->belongsTo(\\App\\Models\\Company\\{$table_prefix}Employee::class, 'emp_id', 'emp_id');\n    }\n\n" .
-                "    public function department() {\n        return \$this->belongsTo(\\App\\Models\\Company\\{$table_prefix}Department::class, 'department_id');\n    }\n\n" .
-                "    public function shift() {\n        return \$this->belongsTo(\\App\\Models\\Company\\{$table_prefix}Shift::class, 'shift_id');\n    }\n\n" .
-                "    public function user() {\n        return \$this->belongsTo(\\App\\Models\\CompanyUser::class, 'uid');\n    }",
-                $modelContent
-            );
-
-            // Save the updated employee work details model content
-            File::put($modelPath, $modelContent);
-        }
     }
 
     private function createEmployeeReportingToTable($companyPrefix, $companyId)
@@ -745,46 +368,6 @@ class CompanyDynamicTableService
                 $table->timestamps(); // Automatically adds created_at and updated_at fields
             });
         }
-        $this->generateEmployeeReportingToModel($companyPrefix, $companyId);
-    }
-
-    private function generateEmployeeReportingToModel($companyPrefix, $companyId)
-    {
-
-        $table_prefix = ucfirst($companyPrefix);
-
-        // Create the model name based on company prefix
-        $modelName = $table_prefix . 'EmployeeReportingTo';
-
-        // Path to place the model inside the "Company" directory
-        $modelNamespacePath = "Company/{$modelName}";
-
-        // Generate the employee reporting to model using the Artisan command
-        Artisan::call('make:model', ['name' => $modelNamespacePath]);
-
-        // Path to the generated employee reporting to model
-        $modelPath = app_path("Models/Company/{$modelName}.php");
-
-        // Define the fillable fields for the employee reporting to model
-        $fillableFieldsString = "['emp_id', 'reporting_to_id', 'uid']";
-
-        // Add the table, fillable properties, and relationships to the generated model
-        if (File::exists($modelPath)) {
-            $modelContent = File::get($modelPath);
-
-            // Inject the table name, fillable fields, and relationships (belongsTo)
-            $modelContent = str_replace(
-                'use HasFactory;',
-                "use HasFactory;\n\n    protected \$table = '{$companyId}_{$companyPrefix}_employee_reporting_to';\n\n    protected \$fillable = {$fillableFieldsString};\n\n" .
-                "    public function employee() {\n        return \$this->belongsTo(\\App\\Models\\Company\\{$table_prefix}Employee::class, 'emp_id', 'emp_id');\n    }\n\n" .
-                "    public function reportingTo() {\n        return \$this->belongsTo(\\App\\Models\\Company\\{$table_prefix}Employee::class, 'reporting_to_id', 'emp_id');\n    }\n\n" .
-                "    public function user() {\n        return \$this->belongsTo(\\App\\Models\\CompanyUser::class, 'uid');\n    }",
-                $modelContent
-            );
-
-            // Save the updated employee reporting to model content
-            File::put($modelPath, $modelContent);
-        }
     }
 
     private function createNoticeTable($companyPrefix, $companyId)
@@ -809,41 +392,6 @@ class CompanyDynamicTableService
 
                 $table->timestamps(); // Automatically adds created_at and updated_at fields
             });
-        }
-        $this->generateNoticeModel($companyPrefix, $companyId);
-    }
-
-    private function generateNoticeModel($companyPrefix, $companyId)
-    {
-        // Create the model name based on company prefix
-        $modelName = ucfirst($companyPrefix) . 'Notice';
-
-        // Path to place the model inside the "Company" directory
-        $modelNamespacePath = "Company/{$modelName}";
-
-        // Generate the notice model using the Artisan command
-        Artisan::call('make:model', ['name' => $modelNamespacePath]);
-
-        // Path to the generated notice model
-        $modelPath = app_path("Models/Company/{$modelName}.php");
-
-        // Define the fillable fields for the notice model
-        $fillableFieldsString = "['notice_type', 'notice_days', 'uid']";
-
-        // Add the table, fillable properties, and relationships to the generated model
-        if (File::exists($modelPath)) {
-            $modelContent = File::get($modelPath);
-
-            // Inject the table name, fillable fields, and relationships (belongsTo)
-            $modelContent = str_replace(
-                'use HasFactory;',
-                "use HasFactory;\n\n    protected \$table = '{$companyId}_{$companyPrefix}_notice';\n\n    protected \$fillable = {$fillableFieldsString};\n\n" .
-                "    public function user() {\n        return \$this->belongsTo(\\App\\Models\\CompanyUser::class, 'uid');\n    }",
-                $modelContent
-            );
-
-            // Save the updated notice model content
-            File::put($modelPath, $modelContent);
         }
     }
 
@@ -884,45 +432,6 @@ class CompanyDynamicTableService
 
                 $table->timestamps(); // Automatically adds created_at and updated_at fields
             });
-        }
-        $this->generateEmployeeResignationModel($companyPrefix, $companyId);
-    }
-
-    private function generateEmployeeResignationModel($companyPrefix, $companyId)
-    {
-        $table_prefix = ucfirst($companyPrefix);
-
-        // Create the model name based on company prefix
-        $modelName = $table_prefix . 'EmployeeResignation';
-
-        // Path to place the model inside the "Company" directory
-        $modelNamespacePath = "Company/{$modelName}";
-
-        // Generate the employee resignation model using the Artisan command
-        Artisan::call('make:model', ['name' => $modelNamespacePath]);
-
-        // Path to the generated employee resignation model
-        $modelPath = app_path("Models/Company/{$modelName}.php");
-
-        // Define the fillable fields for the employee resignation model
-        $fillableFieldsString = "['notice_id', 'emp_id', 'start_date', 'end_date', 'reason_for_releiving', 'uid']";
-
-        // Add the table, fillable properties, and relationships to the generated model
-        if (File::exists($modelPath)) {
-            $modelContent = File::get($modelPath);
-
-            // Inject the table name, fillable fields, and relationships (belongsTo)
-            $modelContent = str_replace(
-                'use HasFactory;',
-                "use HasFactory;\n\n    protected \$table = '{$companyId}_{$companyPrefix}_employee_resignation';\n\n    protected \$fillable = {$fillableFieldsString};\n\n" .
-                "    public function notice() {\n        return \$this->belongsTo(\\App\\Models\\Company\\{$table_prefix}Notice::class, 'notice_id');\n    }\n\n" .
-                "    public function employee() {\n        return \$this->belongsTo(\\App\\Models\\Company\\{$table_prefix}Employee::class, 'emp_id', 'emp_id');\n    }\n\n" .
-                "    public function user() {\n        return \$this->belongsTo(\\App\\Models\\CompanyUser::class, 'uid');\n    }",
-                $modelContent
-            );
-
-            // Save the updated employee resignation model content
-            File::put($modelPath, $modelContent);
         }
     }
 
