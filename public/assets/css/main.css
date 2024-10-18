@@ -493,18 +493,103 @@ p {
 
 }
 
-.sidebar {
-    width: 250px;
-    transition: width 0.3s ease;
+.text-decoration-none,.text-decoration-none:hover{
+    text-decoration: none;
+    color: #000 !important;
 }
 
-.sidebar.collapse {
-    width: 0; /* Collapsed width */
+
+/* pricing detail page */
+
+
+
+.features-grid i {
+    font-size: 70px;
 }
 
-.collapse:not(.show) {
-    width: 80px; /* Adjust this to the width you want when collapsed */
+.features-img img {
+    border-radius: 0 500px 500px 0;
 }
 
+.features-img {
+    position: relative;
+    background-image: url(../img/feature-img.png);
+    object-fit: cover;
+    background-size: cover;
+    border-radius: 0 500px 500px 0;
+    height: 500px;
+    z-index: 1;
+}
+
+.features-img::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Adjust the color and opacity */
+    border-radius: 0 500px 500px 0;
+
+}
+
+
+
+
+.custom-card,
+.features-grid {
+    padding: 4%;
+}
+
+.custom-card::before {
+    content: "";
+    width: 2px;
+    height: 80%;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    position: absolute;
+    background: linear-gradient(90deg, #FF7469 -2.17%, #FFB06D 100%);
+    opacity: 0.4;
+}
+
+.custom-card::after {
+    content: "";
+    width: 85%;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    position: absolute;
+    background: linear-gradient(90deg, #FF7469 -2.17%, #FFB06D 100%);
+    opacity: 0.4;
+}
+.card-third::before,.card-fourth::after,.card-fifth::after,.card-sixth::after,.card-sixth::before{
+content: none;
+}
+
+
+.pricing-features-bg {
+    display: block;
+    width: 70%;
+    height: 670px;
+    background: #FFF7F6;
+    top: 80px;
+    right: 0;
+    position: absolute;
+    border-radius: 500px 0px 0px 500px;
+
+}
+
+.features-img h4 {
+    font-size: 55px;
+    font-weight: bold;
+    z-index: 1;
+    line-height: 1;
+}
+
+.dotted-border {
+    border-bottom: 1px dotted #000;
+}
 
 
