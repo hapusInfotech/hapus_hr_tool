@@ -185,7 +185,6 @@ class CompanyController extends Controller
         return response()->json(['exists' => $exists]);
     }
 
-
     public function thankyou(Request $request)
     {
         // Retrieve the email and password from the URL query parameters
@@ -194,6 +193,24 @@ class CompanyController extends Controller
 
         // Return the view with the email, password, and login URL
         return view('company.company_thankyou', compact('email', 'password'));
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        // Find the company by ID
+        $company = Company::find($id);
+
+        if ($company) {
+            // Update the company_status field
+            $company->company_status = $request->company_status;
+            $company->save();
+
+            // Return a success response
+            return response()->json(['success' => true, 'message' => 'Company status updated successfully.']);
+        }
+
+        // If the company is not found, return an error response
+        return response()->json(['success' => false, 'message' => 'Company not found.'], 404);
     }
 
 }

@@ -124,6 +124,7 @@ Route::delete('/company/{id}', [CompanyController::class, 'destroy'])->name('com
 Route::post('/check-company-prefix', [CompanyController::class, 'checkCompanyPrefix'])->name('company.checkPrefix');
 Route::post('/check-company-email', [CompanyController::class, 'checkCompanyEmail'])->name('company.checkEmail');
 Route::get('company/thankyou', [CompanyController::class, 'thankyou'])->name('company.thankyou');
+Route::post('/company/update-status/{id}', [CompanyController::class, 'updateStatus'])->name('company.update_status');
 
 //super admin Routes
 Route::get('/admin/home', [AdminController::class, 'super_admin_index'])

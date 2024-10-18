@@ -1,24 +1,53 @@
 $(document).ready(function () {
-    // Handle showing the delete modal with dynamic content
-    var deleteModal = document.getElementById("deleteModal");
+    // Handle the delete button click to open the modal with the correct company data
+    $("#deleteModal").on("show.bs.modal", function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var companyId = button.data("company-id"); // Extract company ID from data-* attributes
+        var companyName = button.data("company-name"); // Extract company name from data-* attributes
 
-    deleteModal.addEventListener("show.bs.modal", function (event) {
-        // Button that triggered the modal
-        var button = event.relatedTarget;
+        // Update the modal content
+        var modal = $(this);
+        modal
+            .find(".modal-body")
+            .text("Are you sure you want to delete " + companyName + "?");
 
-        // Extract data from the button attributes
-        var companyId = button.getAttribute("data-company-id");
-        var companyName = button.getAttribute("data-company-name");
+        // Update the form action URL with the correct company ID
+        $("#deleteForm").attr("action", "/company/" + companyId);
+    });
+    // Get CSRF token from meta tag
+    var csrfToken = $('meta[name="csrf-token"]').attr("content");
+    // Listen for the change event on the toggle
+    $(".company-status-toggle").change(function () {
+        var companyId = $(this).data("company-id");
+        var newStatus = $(this).prop("checked") ? 1 : 0; // 1 for active, 0 for inactive
+        // Find the associated span element for this checkbox
+        var statusSpan = $(this).siblings(".company-status");
 
-        // Select elements in the modal to update content
-        var deleteMessage = deleteModal.querySelector("#deleteMessage");
-        var deleteForm = deleteModal.querySelector("#deleteForm");
-
-        // Set the form action to the correct route
-        deleteForm.action = "/company/" + companyId;
-
-        // Update the delete message
-        deleteMessage.textContent = 'Are you sure you want to delete the company "' + companyName + '"?';
+        // Send an AJAX request to update the company status
+        $.ajax({
+            url: "/company/update-status/" + companyId, // Your update status route
+            type: "POST",
+            data: {
+                _token: csrfToken, // CSRF token for Laravel
+                company_status: newStatus,
+            },
+            success: function (response) {
+                // Update the span based on the new status
+                if (newStatus === 1) {
+                    statusSpan.text("Active");
+                } else {
+                    statusSpan.text("Inactive");
+                }
+                // Optional: Show a success message or handle UI updates
+                alert("Company status updated successfully.");
+            },
+            error: function (xhr) {
+                // Handle error if the request fails
+                alert("Error updating company status. Please try again.");
+            },
+        });
     });
 });
-{/* <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> */}
+{
+    /* <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> */
+}

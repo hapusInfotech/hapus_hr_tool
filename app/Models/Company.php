@@ -35,7 +35,7 @@ class Company extends Model
 
     public function subscription()
     {
-        return $this->belongsTo(Subscription::class, 'Sid');
+        return $this->belongsTo(Subscription::class, 'subscription_id');
     }
 
     public function role()
