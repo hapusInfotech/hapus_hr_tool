@@ -6,6 +6,7 @@ use App\Http\Controllers\CommonController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DemoController;
+use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\QuestPageController;
 use App\Http\Controllers\RazorpayPaymentController;
@@ -156,3 +157,7 @@ Route::post('company/password/reset', [CompanyLoginController::class, 'resetPass
 Route::get('company/dashboard', [CompanyLoginController::class, 'dashboard'])
     ->middleware('auth:company_login')
     ->name('company.dashboard');
+
+Route::middleware('auth:company_login')->group(function () {
+    Route::resource('departments', DepartmentController::class);
+});
