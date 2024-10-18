@@ -45,7 +45,7 @@
                         @if($plan == 'basic')
                         <div class="form-group">
                             <label for="no_of_people">Number of People</label>
-                            <input type="number" class="form-control" id="no_of_people" name="no_of_people" value="{{$no_of_people}}" placeholder="Enter the number of people" required min="1" max="25" data-parsley-min="1" data-parsley-max="25" data-parsley-error-message="people must be between 1 and 25 For Basic Plan For More Contact Admin">
+                            <input type="number" class="form-control" id="no_of_people" name="no_of_people" value="{{$no_of_people}}" placeholder="Enter the number of people" required min="1" max="5000" data-parsley-min="1" data-parsley-max="5000" data-parsley-error-message="people must be between 1 and 5000 For Basic Plan For More Contact Admin">
 
                         </div>
                         @else
@@ -59,7 +59,7 @@
 
                         <div class="form-group">
                             <label for="cost_per_head">Total Cost</label>
-                            <input type="number" class="form-control" id="cost_per_head" name="cost_per_head" value="100" readonly>
+                            <input type="number" class="form-control" id="cost_per_head" name="cost_per_head" value="{{ $costs_basic }}" readonly>
                         </div>
 
 

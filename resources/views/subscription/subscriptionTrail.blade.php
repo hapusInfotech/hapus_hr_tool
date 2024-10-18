@@ -58,7 +58,7 @@
 
                         <div class="form-group">
                             <label for="cost_per_head">Total Cost</label>
-                            <input type="number" class="form-control" id="cost_per_head" name="cost_per_head" value="100" readonly>
+                            <input type="number" class="form-control" id="cost_per_head" name="cost_per_head" value="{{ $costs_trial }}" readonly>
                         </div>
 
 
