@@ -76,6 +76,50 @@ class CompanyController extends Controller
             'force_password_change' => true, // This flag will force the user to change password on first login
         ]);
 
+        // Insert into the roles table
+        $rolesTableName = "{$company->id}_{$request->company_prefix}_roles"; // Dynamically created table name
+        // Insert and get the role ID
+        $roleId = \DB::table($rolesTableName)->insertGetId([
+            'roles' => 'Administrator',
+            'weight' => -1,
+            'department_id' => null, // Assuming you have a departments table or you can set a value if needed
+            'company_id' => $company->id,
+            'uid' => $companyUser->id, // The user who created this role
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        // Insert into the employees table
+        $employeesTableName = "{$company->id}_{$request->company_prefix}_employees"; // Dynamically created table name
+        \DB::table($employeesTableName)->insert([
+            'emp_id' => "Administrator", // Unique employee ID, you can use UUID or some other logic
+            'emp_name' => $company->company_name,
+            'emp_email' => $company->company_email,
+            'emp_username' => $company->company_name, // Using company name as the username, adjust as needed
+            'emp_gender' => 2, // Assuming 2 means 'Other', adjust as per your requirements
+            'emp_profile_id' => null, // Assuming there's no profile picture initially
+            'emp_role' => 'Administrator', // Role of the employee
+            'emp_role_id' => $roleId, // Assuming 1 is the role ID for 'Administrator'
+            'emp_uid' => $companyUser->id, // The user ID of the company admin
+            'account_creator_uid' => $companyUser->id, // The user who created the company
+            'active_status' => 1, // Active status
+            'company_id' => $company->id, // The company ID
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        // Define the dynamically generated layout table name
+        $layoutTableName = "{$company->id}_{$request->company_prefix}_layout";
+
+        // Insert the layout information (Administrator, blue, white)
+        \DB::table($layoutTableName)->insert([
+            'emp_id' => "Administrator", // The user ID of the company admin
+            'sidebar' => 'white', // Assuming 'white' is the sidebar color
+            'topbar' => 'blue', // Assuming 'blue' is the topbar color
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
         // Redirect to the thank you page with the relevant data
         return redirect()->route('company.thankyou', [
             'email' => $companyUser->email,

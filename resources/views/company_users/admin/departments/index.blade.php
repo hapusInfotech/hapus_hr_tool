@@ -22,11 +22,17 @@
             @foreach ($departments as $index => $department)
                 <tr>
                     <td>{{ $index + 1 }}</td> <!-- Serial Number -->
-                    <td>{{ $department->department }}</td> <!-- Department Name -->
+                    <td>
+                        <!-- Link to roles index with encrypted department_id -->
+                        <a href="{{ route('roles.index', ['department_id' => Crypt::encrypt($department->id)]) }}">
+                            {{ $department->department }}
+                        </a>
+                    </td>
+
                     <td>{{ $department->weight }}</td> <!-- Weight -->
                     <td>
-                        <a href="{{ route('departments.show', ['department' => Crypt::encrypt($department->id)]) }}"
-                            class="btn btn-info btn-sm">View</a>
+                        {{-- <a href="{{ route('departments.show', ['department' => Crypt::encrypt($department->id)]) }}"
+                            class="btn btn-info btn-sm">View</a> --}}
                         <a href="{{ route('departments.edit', ['department' => Crypt::encrypt($department->id)]) }}"
                             class="btn btn-warning btn-sm">Edit</a>
 

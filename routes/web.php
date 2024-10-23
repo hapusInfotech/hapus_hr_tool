@@ -7,9 +7,12 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DemoController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\QuestPageController;
 use App\Http\Controllers\RazorpayPaymentController;
+use App\Http\Controllers\RolesController;
+use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\SubscriptionAmountController;
 use App\Http\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Auth;
@@ -160,4 +163,40 @@ Route::get('company/dashboard', [CompanyLoginController::class, 'dashboard'])
 
 Route::middleware('auth:company_login')->group(function () {
     Route::resource('departments', DepartmentController::class);
+    // web.php
+    Route::post('/departments/add', [DepartmentController::class, 'add'])->name('departments.add');
+
+});
+
+// Group all role-related routes with the auth:company_login middleware
+Route::middleware('auth:company_login')->group(function () {
+    Route::get('roles/department/{department_id}', [RolesController::class, 'index'])->name('roles.index');
+    Route::get('roles/create/{department_id}', [RolesController::class, 'create'])->name('roles.create');
+    Route::post('roles/store', [RolesController::class, 'store'])->name('roles.store');
+    Route::get('roles/{role_id}/edit', [RolesController::class, 'edit'])->name('roles.edit');
+    Route::put('roles/{role_id}/update', [RolesController::class, 'update'])->name('roles.update');
+    Route::delete('roles/{role_id}/delete', [RolesController::class, 'destroy'])->name('roles.destroy');
+});
+
+// Group all role-related routes with the auth:company_login middleware
+Route::middleware('auth:company_login')->group(function () {
+    Route::get('/employees/create', [EmployeeController::class, 'showForm'])->name('employees.create');
+    Route::post('/employees/store', [EmployeeController::class, 'storeStep'])->name('employees.storeStep');
+    Route::get('/employees/departments', [EmployeeController::class, 'getDepartments'])->name('employees.getDepartments');
+    Route::get('/employees/roles/{departmentId}', [EmployeeController::class, 'getRoles'])->name('employees.getRoles');
+    Route::get('/employees/search', [EmployeeController::class, 'searchEmployees']);
+    Route::post('/employees/check-availability', [EmployeeController::class, 'checkAvailability']);
+    Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
+    Route::post('/employees/update-status', [EmployeeController::class, 'updateStatus'])->name('employees.updateStatus');
+    Route::get('/employees/{emp_id}', [EmployeeController::class, 'show'])->name('employees.show');
+
+});
+
+Route::middleware('auth:company_login')->group(function () {
+    Route::get('/shifts', [ShiftController::class, 'index'])->name('shifts.index');
+    Route::get('/shifts/create', [ShiftController::class, 'create'])->name('shifts.create');
+    Route::post('/shifts', [ShiftController::class, 'store'])->name('shifts.store');
+    Route::get('/shifts/{id}/edit', [ShiftController::class, 'edit'])->name('shifts.edit');
+    Route::put('/shifts/{id}', [ShiftController::class, 'update'])->name('shifts.update');
+    Route::delete('/shifts/{id}', [ShiftController::class, 'destroy'])->name('shifts.destroy');
 });

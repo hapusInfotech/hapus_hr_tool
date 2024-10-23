@@ -22,6 +22,7 @@
         <link rel="stylesheet" href="{{ asset('company_dashboard/assets/css/company/style.css') }}" />
         <!-- End layout styles -->
         <link rel="shortcut icon" href="{{ asset('company_dashboard/assets/images/favicon.png') }}" />
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
     </head>
     @yield('head')
 
@@ -45,7 +46,7 @@
                         </a>
                     </li>
                     <li class="nav-item pt-3">
-                        <a class="nav-link d-block" href="{{ asset('company_dashboard/index.html') }}">
+                        <a class="nav-link d-block" href="{{ route('company.dashboard') }}">
                             <img class="sidebar-brand-logo"
                                 src="{{ asset('company_dashboard/assets/images/logo.svg') }}" alt="" />
 
@@ -62,24 +63,29 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="/company/dashboard">
+                        <a class="nav-link" href="{{ route('company.dashboard') }}">
                             <i class="mdi mdi-compass-outline menu-icon"></i>
                             <span class="menu-title">Dashboard</span>
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link"
-                            href="{{ route('departments.index') }}">
+                        <a class="nav-link" href="{{ route('departments.index') }}">
                             <i class="mdi mdi-contacts menu-icon"></i>
                             <span class="menu-title">Department</span>
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="/company/dashboard">
+                        <a class="nav-link" href="{{ route('employees.index') }}">
                             <i class="mdi mdi-contacts menu-icon"></i>
                             <span class="menu-title">Employees</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('shifts.index') }}">
+                            <i class="mdi mdi-contacts menu-icon"></i>
+                            <span class="menu-title">Shifts</span>
                         </a>
                     </li>
 
@@ -119,7 +125,7 @@
                         </button>
                         <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
                             <a class="navbar-brand brand-logo-mini"
-                                href="{{ asset('company_dashboard/index.html') }}"><img
+                                href="{{ route('company.dashboard') }}"><img
                                     src="{{ asset('company_dashboard/assets/images/logo-mini.svg') }}"
                                     alt="logo" /></a>
                         </div>
@@ -279,6 +285,7 @@
             <script src="{{ asset('company_dashboard/assets/js/settings.js') }}"></script>
 
             <script src="{{ asset('company_dashboard/assets/js/dashboard.js') }}"></script>
+            <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
             @yield('scripts')
             <!-- End custom js for this page -->
     </body>

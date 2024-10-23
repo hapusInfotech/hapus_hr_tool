@@ -22,6 +22,7 @@ class CompanyDynamicTableService
         $this->createEmployeeReportingToTable($companyPrefix, $companyId);
         $this->createNoticeTable($companyPrefix, $companyId);
         $this->createEmployeeResignationTable($companyPrefix, $companyId);
+        $this->createLayoutTable($companyPrefix, $companyId);
     }
 
     private function createDepartmentTable($companyPrefix, $id)
@@ -52,7 +53,7 @@ class CompanyDynamicTableService
                 $table->id();
                 $table->string('roles');
                 $table->integer('weight')->default(0);
-                $table->unsignedBigInteger('department_id'); // Foreign key for the department
+                $table->unsignedBigInteger('department_id')->nullable(); // Foreign key for the department
                 $table->unsignedBigInteger('company_id'); // Foreign key for the company
                 $table->unsignedBigInteger('uid'); // Foreign key for the company user
                 $table->timestamps();
@@ -119,7 +120,10 @@ class CompanyDynamicTableService
                 $table->string('shift_name'); // Name of the shift
                 $table->time('shift_start_time'); // Start time of the shift
                 $table->time('shift_end_time'); // End time of the shift
-                $table->integer('shift_liberal_hrs')->default(0); // Liberal hours (allowed flexible time)
+                // Liberal hours (allowed flexible time), changed to decimal to support fractional hours
+                $table->decimal('shift_liberal_hrs', 10, 2)->default(0.00)->nullable(); // Updated to decimal type
+                $table->unsignedBigInteger('company_id'); // Foreign key for the company
+                $table->foreign('company_id')->references('id')->on('company')->onDelete('cascade');
 
                 // Foreign key referencing company_users table's id
                 $table->unsignedBigInteger('uid');
@@ -429,6 +433,31 @@ class CompanyDynamicTableService
                     ->references('id')
                     ->on('company_users')
                     ->onDelete('cascade');
+
+                $table->timestamps(); // Automatically adds created_at and updated_at fields
+            });
+        }
+    }
+
+    private function createLayoutTable($companyPrefix, $companyId)
+    {
+        // Table name dynamically based on the company prefix and ID
+        $tableName = $companyId . '_' . $companyPrefix . '_layout';
+
+        if (!Schema::hasTable($tableName)) {
+            Schema::create($tableName, function (Blueprint $table) use ($companyPrefix, $companyId) {
+                $table->id(); // Auto-incrementing ID field
+
+                // Foreign key referencing the employees table's emp_id
+                $table->string('emp_id');
+                $table->foreign('emp_id')
+                    ->references('emp_id')
+                    ->on("{$companyId}_{$companyPrefix}_employees")
+                    ->onDelete('cascade');
+
+                // Sidebar and Topbar layout fields
+                $table->string('sidebar')->nullable(); // Sidebar layout details (could be a string or JSON based on your needs)
+                $table->string('topbar')->nullable(); // Topbar layout details (could be a string or JSON based on your needs)
 
                 $table->timestamps(); // Automatically adds created_at and updated_at fields
             });
