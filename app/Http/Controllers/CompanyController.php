@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Otp\OtpController;
 use App\Models\Company;
 use App\Models\CompanyUser;
 use App\Services\CompanyDynamicTableService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -15,9 +17,11 @@ use Illuminate\Support\Str;
 class CompanyController extends Controller
 {
     protected $companyDynamicTableService;
-    public function __construct(CompanyDynamicTableService $companyDynamicTableService)
+    protected $otpController;
+    public function __construct(CompanyDynamicTableService $companyDynamicTableService, OtpController $otpController)
     {
         $this->companyDynamicTableService = $companyDynamicTableService;
+        $this->otpController = $otpController;
     }
     public function index()
     {
@@ -43,91 +47,201 @@ class CompanyController extends Controller
     }
 
     // Store the form data
+    // public function store(Request $request)
+    // {
+
+    //     $this->otpController->sendOtp($request);
+    //     // Store the company data in the database
+    //     $sid = $request->input('sid');
+
+    //     $company = Company::create([
+    //         'company_name' => $request->input('company_name'),
+    //         'company_prefix' => $request->input('company_prefix'),
+    //         'company_type' => $request->input('company_type'),
+    //         'company_email' => $request->input('company_email'),
+    //         'company_phone_number' => $request->input('company_phone_number'),
+    //         'company_address' => $this->formatAddress($request),
+    //         'uid' => auth()->id(), // Assuming you're storing the currently authenticated user's ID
+    //         'subscription_id' => $sid, // Set this value as needed
+    //         'roles_id' => 1, // Default role_id if needed
+    //         'email_status' => 0, // Default to 0
+    //         'company_status' => 1, // Active by default
+    //     ]);
+
+    //     $this->companyDynamicTableService->createCompanyTables($request->company_prefix, $company->id);
+
+    //     // Generate a strong random password
+    //     $generatedPassword = Str::random(12); // You can make this more complex if required
+
+    //     // Add a user to the company_users table with the generated password
+    //     $companyUser = CompanyUser::create([
+    //         'name' => $request->input('company_name'), // Name for the company user (you can adjust this)
+    //         'email' => $request->input('company_email'),
+    //         'password' => Hash::make($generatedPassword),
+    //         'company_id' => $company->id,
+    //         'force_password_change' => true, // This flag will force the user to change password on first login
+    //     ]);
+
+    //     // Insert into the roles table
+    //     $rolesTableName = "{$company->id}_{$request->company_prefix}_roles"; // Dynamically created table name
+    //     // Insert and get the role ID
+    //     $roleId = DB::table($rolesTableName)->insertGetId([
+    //         'roles' => 'Administrator',
+    //         'weight' => -1,
+    //         'department_id' => null, // Assuming you have a departments table or you can set a value if needed
+    //         'company_id' => $company->id,
+    //         'uid' => $companyUser->id, // The user who created this role
+    //         'created_at' => now(),
+    //         'updated_at' => now(),
+    //     ]);
+
+    //     // Insert into the employees table
+    //     $employeesTableName = "{$company->id}_{$request->company_prefix}_employees"; // Dynamically created table name
+    //     DB::table($employeesTableName)->insert([
+    //         'emp_id' => "Administrator", // Unique employee ID, you can use UUID or some other logic
+    //         'emp_name' => $company->company_name,
+    //         'emp_email' => $company->company_email,
+    //         'emp_username' => $company->company_name,
+    //         'emp_gender' => 2,
+    //         'emp_profile_id' => null,
+    //         'emp_role' => 'Administrator', // Role of the employee
+    //         'emp_role_id' => $roleId, // Assuming 1 is the role ID for 'Administrator'
+    //         'emp_uid' => $companyUser->id, // The user ID of the company admin
+    //         'account_creator_uid' => $companyUser->id, // The user who created the company
+    //         'active_status' => 1, // Active status
+    //         'company_id' => $company->id, // The company ID
+    //         'created_at' => now(),
+    //         'updated_at' => now(),
+    //     ]);
+
+    //     // Define the dynamically generated layout table name
+    //     $layoutTableName = "{$company->id}_{$request->company_prefix}_layout";
+
+    //     // Insert the layout information (Administrator, blue, white)
+    //     DB::table($layoutTableName)->insert([
+    //         'emp_id' => "Administrator", // The user ID of the company admin
+    //         'sidebar' => 'white', // Assuming 'white' is the sidebar color
+    //         'topbar' => 'blue', // Assuming 'blue' is the topbar color
+    //         'created_at' => now(),
+    //         'updated_at' => now(),
+    //     ]);
+
+    //     // Redirect to the thank you page with the relevant data
+    //     return redirect()->route('company.thankyou', [
+    //         'email' => $companyUser->email,
+    //         'password' => $generatedPassword,
+    //     ]);
+
+    // }
     public function store(Request $request)
     {
+        // Step 1: If OTP is not provided, generate and send the OTP
+        if (!$request->input('otp')) {
+            // Store the form data in the session
+            session()->put('company_form_data', $request->except('_token'));
+    
+            // Send OTP and display OTP form
+            $this->otpController->sendOtp($request);
+            return view('emails.otp_form', ['email' => $request->input('company_email')]);
+        }
+    
+        // Step 2: OTP is provided, now validate it
+        $otpValidationResult = $this->otpController->validateOtp($request);
+    
+        // If OTP is invalid, return back to OTP entry page
+        if (session('error')) {
+            return view('emails.otp_form', ['email' => $request->input('company_email')])->with(['otp' => 'Invalid or expired OTP']);
+        }
+    
+        // If OTP is valid, retrieve the form data from the session
+        $formData = session()->get('company_form_data');
+    
+        // Proceed to store the company details using the saved form data
+        return $this->storeCompanyData($formData);
+    }
+    
+    protected function storeCompanyData($formData)
+    {
+        $sid = $formData['sid'];
+    
         // Store the company data in the database
-        $sid = $request->input('sid');
-
         $company = Company::create([
-            'company_name' => $request->input('company_name'),
-            'company_prefix' => $request->input('company_prefix'),
-            'company_type' => $request->input('company_type'),
-            'company_email' => $request->input('company_email'),
-            'company_phone_number' => $request->input('company_phone_number'),
-            'company_address' => $this->formatAddress($request),
-            'uid' => auth()->id(), // Assuming you're storing the currently authenticated user's ID
-            'subscription_id' => $sid, // Set this value as needed
-            'roles_id' => 1, // Default role_id if needed
-            'email_status' => 0, // Default to 0
-            'company_status' => 1, // Active by default
+            'company_name' => $formData['company_name'],
+            'company_prefix' => $formData['company_prefix'],
+            'company_type' => $formData['company_type'],
+            'company_email' => $formData['company_email'],
+            'company_phone_number' => $formData['company_phone_number'],
+            'company_address' => $this->formatAddress((object) $formData),
+            'uid' => auth()->id(),
+            'subscription_id' => $sid,
+            'roles_id' => 1,
+            'email_status' => 0,
+            'company_status' => 1,
         ]);
-
-        $this->companyDynamicTableService->createCompanyTables($request->company_prefix, $company->id);
-
-        // Generate a strong random password
-        $generatedPassword = Str::random(12); // You can make this more complex if required
-
+    
+        // Generate a strong random password for the company user
+        $generatedPassword = Str::random(12);
+    
         // Add a user to the company_users table with the generated password
         $companyUser = CompanyUser::create([
-            'name' => $request->input('company_name'), // Name for the company user (you can adjust this)
-            'email' => $request->input('company_email'),
+            'name' => $formData['company_name'],
+            'email' => $formData['company_email'],
             'password' => Hash::make($generatedPassword),
             'company_id' => $company->id,
-            'force_password_change' => true, // This flag will force the user to change password on first login
+            'force_password_change' => true,
         ]);
-
-        // Insert into the roles table
-        $rolesTableName = "{$company->id}_{$request->company_prefix}_roles"; // Dynamically created table name
-        // Insert and get the role ID
-        $roleId = \DB::table($rolesTableName)->insertGetId([
+    
+        // Insert into the dynamically generated roles table
+        $rolesTableName = "{$company->id}_{$formData['company_prefix']}_roles"; // Dynamically created table name
+        $roleId = DB::table($rolesTableName)->insertGetId([
             'roles' => 'Administrator',
             'weight' => -1,
-            'department_id' => null, // Assuming you have a departments table or you can set a value if needed
+            'department_id' => null, // Assuming no department initially, adjust if needed
             'company_id' => $company->id,
             'uid' => $companyUser->id, // The user who created this role
             'created_at' => now(),
             'updated_at' => now(),
         ]);
-
-        // Insert into the employees table
-        $employeesTableName = "{$company->id}_{$request->company_prefix}_employees"; // Dynamically created table name
-        \DB::table($employeesTableName)->insert([
-            'emp_id' => "Administrator", // Unique employee ID, you can use UUID or some other logic
-            'emp_name' => $company->company_name,
-            'emp_email' => $company->company_email,
-            'emp_username' => $company->company_name, // Using company name as the username, adjust as needed
-            'emp_gender' => 2, // Assuming 2 means 'Other', adjust as per your requirements
-            'emp_profile_id' => null, // Assuming there's no profile picture initially
-            'emp_role' => 'Administrator', // Role of the employee
-            'emp_role_id' => $roleId, // Assuming 1 is the role ID for 'Administrator'
+    // dd("{$company->id}_{$formData['company_prefix']}_employees",$company);
+        // Insert into the dynamically generated employees table
+        $employeesTableName = "{$company->id}_{$formData['company_prefix']}_employees"; // Dynamically created table name
+        DB::table($employeesTableName)->insert([
+            'emp_id' => "Administrator", // You can create logic to generate unique employee IDs if needed
+            'emp_name' => $formData['company_name'],
+            'emp_email' => $formData['company_email'],
+            'emp_username' => $formData['company_name'],
+            'emp_gender' => 2, // Assuming '2' is the default for gender, modify as needed
+            'emp_profile_id' => null,
+            'emp_role' => 'Administrator',
+            'emp_role_id' => $roleId,
             'emp_uid' => $companyUser->id, // The user ID of the company admin
-            'account_creator_uid' => $companyUser->id, // The user who created the company
+            'account_creator_uid' => $companyUser->id,
             'active_status' => 1, // Active status
-            'company_id' => $company->id, // The company ID
+            'company_id' => $company->id,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
-
-        // Define the dynamically generated layout table name
-        $layoutTableName = "{$company->id}_{$request->company_prefix}_layout";
-
-        // Insert the layout information (Administrator, blue, white)
-        \DB::table($layoutTableName)->insert([
+    
+        // Insert into the dynamically generated layout table (if applicable)
+        $layoutTableName = "{$company->id}_{$formData['company_prefix']}_layout";
+        DB::table($layoutTableName)->insert([
             'emp_id' => "Administrator", // The user ID of the company admin
-            'sidebar' => 'white', // Assuming 'white' is the sidebar color
-            'topbar' => 'blue', // Assuming 'blue' is the topbar color
+            'sidebar' => 'white', // Assuming 'white' is the default sidebar color
+            'topbar' => 'blue', // Assuming 'blue' is the default topbar color
             'created_at' => now(),
             'updated_at' => now(),
         ]);
-
-        // Redirect to the thank you page with the relevant data
+    
+        // Clear the session data after saving
+        session()->forget('company_form_data');
+    
+        // Redirect to the thank you page with relevant data
         return redirect()->route('company.thankyou', [
             'email' => $companyUser->email,
             'password' => $generatedPassword,
         ]);
-
     }
-
+    
     public function edit($encryptedId)
     {
         $id = Crypt::decrypt($encryptedId); // Decrypt the ID
@@ -207,12 +321,13 @@ class CompanyController extends Controller
 // Format address helper method
     private function formatAddress($request)
     {
-        return $request->input('company_address_line_1') . ', ' .
-        $request->input('company_address_line_2') . ', ' .
-        $request->input('city') . ', ' .
-        $request->input('country') . '-' . $request->input('country_name') . ', ' .
-        $request->input('state') . '-' . $request->input('state_name') . ', ' .
-        $request->input('company_pincode');
+        // dd($request);
+        return $request->company_address_line_1 . ', ' .
+        $request->company_address_line_2 . ', ' .
+        $request->city . ', ' .
+        $request->country . '-' . $request->country_name . ', ' .
+        $request->state. '-' . $request->state_name . ', ' .
+        $request->company_pincode;
     }
 
     public function checkCompanyPrefix(Request $request)

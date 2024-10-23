@@ -9,6 +9,7 @@ use App\Http\Controllers\DemoController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Otp\OtpController;
 use App\Http\Controllers\QuestPageController;
 use App\Http\Controllers\RazorpayPaymentController;
 use App\Http\Controllers\RolesController;
@@ -200,3 +201,13 @@ Route::middleware('auth:company_login')->group(function () {
     Route::put('/shifts/{id}', [ShiftController::class, 'update'])->name('shifts.update');
     Route::delete('/shifts/{id}', [ShiftController::class, 'destroy'])->name('shifts.destroy');
 });
+
+//otp Routing
+
+
+Route::get('/otp-form', function () {
+    return view('emails.otp_form');
+});
+
+Route::post('/otp/send', [OtpController::class, 'sendOtp'])->name('otp.send');
+Route::post('/otp/validate', [OtpController::class, 'validateOtp'])->name('otp.validate');
