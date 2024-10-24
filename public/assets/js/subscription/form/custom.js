@@ -1,7 +1,7 @@
 $(document).ready(function () {
     $("#subscription-form-basic").parsley();
 
-    var fixedCostPerHead = $('#get-basic-amt').val();
+    var fixedCostPerHeadBasic = $('#get-basic-amt').val();
     var fixedCostPerHeadTrail = ($('#get-trail-amt').val()) ?? 100;
     var isTrial = $("#plan").val();
 
@@ -14,6 +14,9 @@ $(document).ready(function () {
         }
 
     } else {
+        var int_val = $("#no_of_people").val();
+        var int_tl = int_val * fixedCostPerHeadBasic
+        $('#cost_per_head').val(int_tl);
 
         $('#no_of_people').on('input', function () {
             var noOfPeople = $(this).val();
@@ -24,7 +27,7 @@ $(document).ready(function () {
             }
 
             // Calculate the total cost based on the number of people
-            var totalCost = noOfPeople * fixedCostPerHead;
+            var totalCost = noOfPeople * fixedCostPerHeadBasic;
             $('#cost_per_head').val(totalCost);
         });
 
