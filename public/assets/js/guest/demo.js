@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
     // Mask for vendor phone number input
-    $("#phone_number").mask("000000000000");
+    // $("#phone_number").mask("000000000000");
 
     // Fetch and populate country dropdown
     $.ajax({

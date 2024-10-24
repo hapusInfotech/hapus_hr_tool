@@ -56,10 +56,10 @@
                         @endif
 
 
-
                         <div class="form-group">
                             <label for="cost_per_head">Total Cost</label>
                             <input type="number" class="form-control" id="cost_per_head" name="cost_per_head" value="{{ $costs_basic }}" readonly>
+                            <input type="hidden" class="form-control" id="get-basic-amt" name="get-basic-amt" value="{{ $costs_basic }}">
                         </div>
 
 

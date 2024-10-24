@@ -59,6 +59,7 @@
                         <div class="form-group">
                             <label for="cost_per_head">Total Cost</label>
                             <input type="number" class="form-control" id="cost_per_head" name="cost_per_head" value="{{ $costs_trial }}" readonly>
+                            <input type="hidden" class="form-control" id="get-trail-amt" name="get-trail-amt" value="{{ $costs_basic }}">
                         </div>
 
 
