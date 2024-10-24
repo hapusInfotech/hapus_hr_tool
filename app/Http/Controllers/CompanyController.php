@@ -46,93 +46,6 @@ class CompanyController extends Controller
         return view('company.company_create', compact('sid'));
     }
 
-    // Store the form data
-    // public function store(Request $request)
-    // {
-
-    //     $this->otpController->sendOtp($request);
-    //     // Store the company data in the database
-    //     $sid = $request->input('sid');
-
-    //     $company = Company::create([
-    //         'company_name' => $request->input('company_name'),
-    //         'company_prefix' => $request->input('company_prefix'),
-    //         'company_type' => $request->input('company_type'),
-    //         'company_email' => $request->input('company_email'),
-    //         'company_phone_number' => $request->input('company_phone_number'),
-    //         'company_address' => $this->formatAddress($request),
-    //         'uid' => auth()->id(), // Assuming you're storing the currently authenticated user's ID
-    //         'subscription_id' => $sid, // Set this value as needed
-    //         'roles_id' => 1, // Default role_id if needed
-    //         'email_status' => 0, // Default to 0
-    //         'company_status' => 1, // Active by default
-    //     ]);
-
-    //     $this->companyDynamicTableService->createCompanyTables($request->company_prefix, $company->id);
-
-    //     // Generate a strong random password
-    //     $generatedPassword = Str::random(12); // You can make this more complex if required
-
-    //     // Add a user to the company_users table with the generated password
-    //     $companyUser = CompanyUser::create([
-    //         'name' => $request->input('company_name'), // Name for the company user (you can adjust this)
-    //         'email' => $request->input('company_email'),
-    //         'password' => Hash::make($generatedPassword),
-    //         'company_id' => $company->id,
-    //         'force_password_change' => true, // This flag will force the user to change password on first login
-    //     ]);
-
-    //     // Insert into the roles table
-    //     $rolesTableName = "{$company->id}_{$request->company_prefix}_roles"; // Dynamically created table name
-    //     // Insert and get the role ID
-    //     $roleId = DB::table($rolesTableName)->insertGetId([
-    //         'roles' => 'Administrator',
-    //         'weight' => -1,
-    //         'department_id' => null, // Assuming you have a departments table or you can set a value if needed
-    //         'company_id' => $company->id,
-    //         'uid' => $companyUser->id, // The user who created this role
-    //         'created_at' => now(),
-    //         'updated_at' => now(),
-    //     ]);
-
-    //     // Insert into the employees table
-    //     $employeesTableName = "{$company->id}_{$request->company_prefix}_employees"; // Dynamically created table name
-    //     DB::table($employeesTableName)->insert([
-    //         'emp_id' => "Administrator", // Unique employee ID, you can use UUID or some other logic
-    //         'emp_name' => $company->company_name,
-    //         'emp_email' => $company->company_email,
-    //         'emp_username' => $company->company_name,
-    //         'emp_gender' => 2,
-    //         'emp_profile_id' => null,
-    //         'emp_role' => 'Administrator', // Role of the employee
-    //         'emp_role_id' => $roleId, // Assuming 1 is the role ID for 'Administrator'
-    //         'emp_uid' => $companyUser->id, // The user ID of the company admin
-    //         'account_creator_uid' => $companyUser->id, // The user who created the company
-    //         'active_status' => 1, // Active status
-    //         'company_id' => $company->id, // The company ID
-    //         'created_at' => now(),
-    //         'updated_at' => now(),
-    //     ]);
-
-    //     // Define the dynamically generated layout table name
-    //     $layoutTableName = "{$company->id}_{$request->company_prefix}_layout";
-
-    //     // Insert the layout information (Administrator, blue, white)
-    //     DB::table($layoutTableName)->insert([
-    //         'emp_id' => "Administrator", // The user ID of the company admin
-    //         'sidebar' => 'white', // Assuming 'white' is the sidebar color
-    //         'topbar' => 'blue', // Assuming 'blue' is the topbar color
-    //         'created_at' => now(),
-    //         'updated_at' => now(),
-    //     ]);
-
-    //     // Redirect to the thank you page with the relevant data
-    //     return redirect()->route('company.thankyou', [
-    //         'email' => $companyUser->email,
-    //         'password' => $generatedPassword,
-    //     ]);
-
-    // }
     public function store(Request $request)
     {
         // Step 1: If OTP is not provided, generate and send the OTP
@@ -163,7 +76,7 @@ class CompanyController extends Controller
     protected function storeCompanyData($formData)
     {
         $sid = $formData['sid'];
-    
+    //     
         // Store the company data in the database
         $company = Company::create([
             'company_name' => $formData['company_name'],
@@ -190,7 +103,7 @@ class CompanyController extends Controller
             'company_id' => $company->id,
             'force_password_change' => true,
         ]);
-    
+        $this->companyDynamicTableService->createCompanyTables($formData['company_prefix'], $company->id);
         // Insert into the dynamically generated roles table
         $rolesTableName = "{$company->id}_{$formData['company_prefix']}_roles"; // Dynamically created table name
         $roleId = DB::table($rolesTableName)->insertGetId([
